@@ -13,7 +13,7 @@ export default function WelcomeScreen({ onWriteOwn, onUseDefault }) {
             transition={{ duration: 0.5 }}
         >
             <motion.div
-                className="text-center max-w-md"
+                className="text-center w-full max-w-lg"
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2, ...SPRING_GENTLE }}
@@ -45,7 +45,7 @@ export default function WelcomeScreen({ onWriteOwn, onUseDefault }) {
 
                 {/* Subtitle */}
                 <motion.p
-                    className="font-handwritten text-2xl sm:text-3xl text-[var(--ink-deep)] opacity-80 mb-10"
+                    className="font-handwritten text-xl sm:text-2xl md:text-3xl text-[var(--ink-deep)] opacity-80 mb-10 px-4"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 0.8 }}
                     transition={{ delay: 0.6 }}
@@ -83,14 +83,7 @@ export default function WelcomeScreen({ onWriteOwn, onUseDefault }) {
                     </motion.button>
                 </motion.div>
 
-                {/* Status Indicator */}
-                <motion.div
-                    className="mt-12 text-[10px] uppercase tracking-widest text-[var(--ink-deep)] opacity-30 font-serif"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 0.3 }}
-                >
-                    Version 1.3.4 • HD Image Sync 📸
-                </motion.div>
+
 
                 {/* Footer note */}
                 <motion.p
