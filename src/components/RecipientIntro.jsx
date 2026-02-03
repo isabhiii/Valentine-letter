@@ -2,6 +2,38 @@
 
 import { motion } from 'framer-motion';
 import { SPRING_GENTLE, PREMIUM_EASE, EASE_OUT_EXPO } from '@/lib/animations';
+import { DoodleEnvelope, DoodleHeartFilled, DoodleSparkle, DoodleFlower } from './DoodleIcons';
+
+// Background doodle elements with variety
+const DOODLE_ELEMENTS = [
+    { type: 'heart', size: 24 },
+    { type: 'heart', size: 20 },
+    { type: 'sparkle', size: 18 },
+    { type: 'flower', size: 22 },
+    { type: 'heart', size: 28 },
+    { type: 'sparkle', size: 16 },
+    { type: 'heart', size: 22 },
+    { type: 'flower', size: 20 },
+    { type: 'sparkle', size: 20 },
+    { type: 'heart', size: 26 },
+    { type: 'heart', size: 18 },
+    { type: 'sparkle', size: 22 },
+];
+
+function BackgroundDoodle({ type, size, style }) {
+    const color = '#c41e3a';
+
+    switch (type) {
+        case 'heart':
+            return <DoodleHeartFilled size={size} color={color} style={style} />;
+        case 'sparkle':
+            return <DoodleSparkle size={size} style={{ ...style, color }} />;
+        case 'flower':
+            return <DoodleFlower size={size} style={{ ...style, color }} />;
+        default:
+            return <DoodleHeartFilled size={size} color={color} style={style} />;
+    }
+}
 
 export default function RecipientIntro({ senderName, onOpen }) {
     return (
@@ -12,30 +44,35 @@ export default function RecipientIntro({ senderName, onOpen }) {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.8 }}
         >
-            {/* Animated background hearts */}
+            {/* Animated background doodles */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                {[...Array(15)].map((_, i) => (
+                {DOODLE_ELEMENTS.map((doodle, i) => (
                     <motion.div
                         key={i}
-                        className="absolute text-2xl sm:text-3xl opacity-20"
+                        className="absolute"
                         style={{
-                            left: `${10 + Math.random() * 80}%`,
-                            top: `${10 + Math.random() * 80}%`,
+                            left: `${8 + (i * 7) % 84}%`,
+                            top: `${12 + (i * 11) % 76}%`,
                         }}
-                        initial={{ opacity: 0, scale: 0 }}
+                        initial={{ opacity: 0, scale: 0, rotate: -20 }}
                         animate={{
-                            opacity: [0, 0.2, 0.1],
-                            scale: [0.5, 1, 0.8],
-                            y: [0, -30, 0],
+                            opacity: [0, 0.15, 0.1],
+                            scale: [0.5, 1, 0.85],
+                            y: [0, -25, 0],
+                            rotate: [-10, 10, -10]
                         }}
                         transition={{
-                            duration: 4 + Math.random() * 3,
-                            delay: Math.random() * 2,
+                            duration: 4.5 + (i % 3),
+                            delay: i * 0.15,
                             repeat: Infinity,
                             ease: "easeInOut"
                         }}
                     >
-                        {['💕', '💗', '💖', '✨', '💌'][Math.floor(Math.random() * 5)]}
+                        <BackgroundDoodle
+                            type={doodle.type}
+                            size={doodle.size}
+                            style={{ opacity: 0.2 }}
+                        />
                     </motion.div>
                 ))}
             </div>
@@ -46,10 +83,10 @@ export default function RecipientIntro({ senderName, onOpen }) {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.3, ...SPRING_GENTLE }}
             >
-                {/* Glowing heart */}
+                {/* Glowing envelope doodle */}
                 <motion.div
                     className="relative inline-block mb-8"
-                    initial={{ scale: 0, rotate: -180 }}
+                    initial={{ scale: 0, rotate: -20 }}
                     animate={{ scale: 1, rotate: 0 }}
                     transition={{
                         delay: 0.5,
@@ -59,22 +96,22 @@ export default function RecipientIntro({ senderName, onOpen }) {
                     }}
                 >
                     <motion.div
-                        className="text-7xl sm:text-8xl"
+                        className="text-[var(--heart-red)]"
                         animate={{
-                            scale: [1, 1.1, 1],
+                            scale: [1, 1.08, 1],
                             filter: [
-                                'drop-shadow(0 0 20px rgba(196, 30, 58, 0.3))',
-                                'drop-shadow(0 0 40px rgba(196, 30, 58, 0.5))',
-                                'drop-shadow(0 0 20px rgba(196, 30, 58, 0.3))'
+                                'drop-shadow(0 0 15px rgba(196, 30, 58, 0.25))',
+                                'drop-shadow(0 0 30px rgba(196, 30, 58, 0.4))',
+                                'drop-shadow(0 0 15px rgba(196, 30, 58, 0.25))'
                             ]
                         }}
                         transition={{
-                            duration: 2,
+                            duration: 2.5,
                             repeat: Infinity,
                             ease: "easeInOut"
                         }}
                     >
-                        💌
+                        <DoodleEnvelope size={100} />
                     </motion.div>
                 </motion.div>
 
@@ -96,20 +133,23 @@ export default function RecipientIntro({ senderName, onOpen }) {
                     </p>
                 </motion.div>
 
-                {/* Valentine's message */}
-                <motion.p
-                    className="font-handwritten text-lg sm:text-xl text-[var(--ink-deep)] opacity-60 mb-10"
+                {/* Valentine's message with doodle heart */}
+                <motion.div
+                    className="flex items-center justify-center gap-2 mb-10"
                     initial={{ opacity: 0 }}
-                    animate={{ opacity: 0.6 }}
+                    animate={{ opacity: 0.7 }}
                     transition={{ delay: 1.2 }}
                 >
-                    This Valentine's Day ❤️
-                </motion.p>
+                    <span className="font-handwritten text-lg sm:text-xl text-[var(--ink-deep)]">
+                        This Valentine's Day
+                    </span>
+                    <DoodleHeartFilled size={18} color="var(--heart-red)" />
+                </motion.div>
 
-                {/* Open button */}
+                {/* Open button with sparkle */}
                 <motion.button
                     onClick={onOpen}
-                    className="px-10 py-4 rounded-full bg-gradient-to-r from-[var(--heart-red)] to-[#e05555]
+                    className="relative px-10 py-4 rounded-full bg-gradient-to-r from-[var(--heart-red)] to-[#e05555]
             text-white font-handwritten text-xl sm:text-2xl shadow-xl shadow-red-500/30
             hover:shadow-2xl hover:shadow-red-500/40 transition-all
             border border-white/20"
@@ -120,11 +160,12 @@ export default function RecipientIntro({ senderName, onOpen }) {
                     whileTap={{ scale: 0.98 }}
                 >
                     <motion.span
-                        className="inline-block"
-                        animate={{ x: [0, 3, 0] }}
+                        className="inline-flex items-center gap-2"
+                        animate={{ x: [0, 2, 0] }}
                         transition={{ duration: 1.5, repeat: Infinity }}
                     >
-                        Open Your Letter ✨
+                        Open Your Letter
+                        <DoodleSparkle size={20} className="text-white" />
                     </motion.span>
                 </motion.button>
 
@@ -135,22 +176,21 @@ export default function RecipientIntro({ senderName, onOpen }) {
                     animate={{ opacity: 0.3 }}
                     transition={{ delay: 2 }}
                 >
-                    ⏱️ This letter will self-destruct after reading
+                    This letter will self-destruct after reading
                 </motion.p>
             </motion.div>
 
-            {/* Decorative elements */}
+            {/* Bottom decorative doodle hearts */}
             <motion.div
-                className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-4"
+                className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-5"
                 initial={{ opacity: 0 }}
-                animate={{ opacity: 0.4 }}
+                animate={{ opacity: 0.5 }}
                 transition={{ delay: 2.5 }}
             >
-                {['💕', '💗', '💕'].map((heart, i) => (
-                    <motion.span
+                {[20, 24, 20].map((size, i) => (
+                    <motion.div
                         key={i}
-                        className="text-2xl"
-                        animate={{ y: [0, -5, 0] }}
+                        animate={{ y: [0, -6, 0] }}
                         transition={{
                             duration: 1.5,
                             delay: i * 0.2,
@@ -158,8 +198,8 @@ export default function RecipientIntro({ senderName, onOpen }) {
                             ease: "easeInOut"
                         }}
                     >
-                        {heart}
-                    </motion.span>
+                        <DoodleHeartFilled size={size} color="var(--heart-red)" />
+                    </motion.div>
                 ))}
             </motion.div>
         </motion.div>

@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence, useSpring, useTransform } from 'framer-motion';
+import { DoodleHeart } from './DoodleIcons';
 
 // Premium spring configuration (Emil Kowalski inspired)
 const SPRING_CONFIG = {
@@ -168,20 +169,13 @@ export default function WaxSealReveal({ onRevealComplete }) {
                                 } : {}}
                                 transition={{ duration: 0.5 }}
                             >
-                                <span
-                                    className="text-4xl sm:text-5xl select-none"
+                                <DoodleHeart
+                                    size={44}
+                                    className="text-[#f5d0d0]"
                                     style={{
-                                        color: '#b01830',
-                                        textShadow: `
-                      1px 1px 0 rgba(0,0,0,0.3),
-                      -1px -1px 0 rgba(255,200,200,0.2),
-                      0 2px 4px rgba(0,0,0,0.2)
-                    `,
-                                        filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.3))'
+                                        filter: 'drop-shadow(1px 1px 0 rgba(0,0,0,0.3)) drop-shadow(-1px -1px 0 rgba(255,200,200,0.2))'
                                     }}
-                                >
-                                    ♥
-                                </span>
+                                />
                             </motion.div>
 
                             {/* Press ring indicator */}

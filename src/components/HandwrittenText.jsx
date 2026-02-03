@@ -9,6 +9,8 @@ import {
     signatureVariants,
     PREMIUM_EASE
 } from '@/lib/animations';
+import { DOODLE_STICKERS } from './DoodleIcons';
+import PhotoGallery from './PhotoGallery';
 
 function AnimatedWord({ word, index }) {
     return (
@@ -63,6 +65,14 @@ export default function HandwrittenText({ letterContent, onComplete }) {
     // Use custom content or fall back to default
     const content = letterContent || LETTER_CONTENT;
 
+    // Debug photos
+    console.log('HandwrittenText content:', content);
+    console.log('Photos:', content.photos);
+
+    // Get sticker component if custom letter has one
+    const stickerKey = content.sticker || 'heart';
+    const StickerComponent = DOODLE_STICKERS[stickerKey]?.component;
+
     return (
         <motion.div
             className="space-y-1"
@@ -88,30 +98,42 @@ export default function HandwrittenText({ letterContent, onComplete }) {
                 />
             ))}
 
-            {/* Signature */}
+            {/* Photo Gallery */}
+            {content.photos && content.photos.length > 0 && (
+                <PhotoGallery photos={content.photos} />
+            )}
+
+            {/* Signature with sticker */}
             <motion.div
                 className="mt-10 text-right"
                 variants={signatureVariants}
             >
-                <p className="signature-text mb-1">
+                <p className="signature-text mb-2">
                     {content.signature},
                 </p>
-                <motion.span
-                    className="text-4xl"
-                    animate={{
-                        scale: [1, 1.1, 1],
-                    }}
-                    transition={{
-                        duration: 1.5,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        delay: 2
-                    }}
-                >
-                    {content.senderName}
-                </motion.span>
+                <div className="flex items-center justify-end gap-3">
+                    <span className="font-handwritten text-2xl text-[var(--ink-deep)]">
+                        {content.senderName}
+                    </span>
+                    {StickerComponent && (
+                        <motion.div
+                            className="text-[var(--heart-red)]"
+                            animate={{
+                                scale: [1, 1.1, 1],
+                                rotate: [0, 5, -5, 0]
+                            }}
+                            transition={{
+                                duration: 2,
+                                repeat: Infinity,
+                                ease: "easeInOut",
+                                delay: 2
+                            }}
+                        >
+                            <StickerComponent size={36} color="currentColor" />
+                        </motion.div>
+                    )}
+                </div>
             </motion.div>
         </motion.div>
     );
 }
-

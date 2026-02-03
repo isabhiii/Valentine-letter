@@ -2,20 +2,27 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { TIMING } from '@/lib/constants';
+import { DoodleHeartFilled } from './DoodleIcons';
 
-const HEART_EMOJIS = ['❤️', '💕', '💗', '💖', '🌸', '✨'];
+// Colors for variety
+const HEART_COLORS = [
+    '#c41e3a', // Heart red
+    '#e8a4a4', // Rose blush
+    '#d4af37', // Gold
+    '#db7093', // Pale violet red
+    '#cd5c5c', // Indian red
+];
 
-// Individual heart with staggered continuous spawning
-function Heart({ id, onComplete }) {
-    // Random properties set once per heart
+// Individual doodle heart with continuous spawning
+function DoodleFloatingHeart({ id, onComplete }) {
     const props = useRef({
-        x: 5 + Math.random() * 90, // Start position %
-        size: 14 + Math.random() * 14, // 14-28px
-        emoji: HEART_EMOJIS[Math.floor(Math.random() * HEART_EMOJIS.length)],
-        duration: 6 + Math.random() * 4, // 6-10 seconds to float up
-        sway: 20 + Math.random() * 30, // Horizontal sway amount
-        delay: Math.random() * 0.5
+        x: 5 + Math.random() * 90,
+        size: 18 + Math.random() * 18,
+        color: HEART_COLORS[Math.floor(Math.random() * HEART_COLORS.length)],
+        duration: 7 + Math.random() * 4,
+        sway: 25 + Math.random() * 35,
+        delay: Math.random() * 0.5,
+        rotation: -15 + Math.random() * 30
     }).current;
 
     return (
@@ -24,28 +31,33 @@ function Heart({ id, onComplete }) {
             style={{
                 left: `${props.x}%`,
                 bottom: 0,
-                fontSize: props.size,
             }}
             initial={{
                 opacity: 0,
                 y: 0,
                 scale: 0.3,
+                rotate: props.rotation
             }}
             animate={{
-                opacity: [0, 0.8, 0.7, 0.5, 0],
-                y: [0, -100, -250, -400, -550],
-                scale: [0.3, 1, 0.9, 0.7, 0.4],
-                x: [0, props.sway * 0.3, -props.sway * 0.5, props.sway * 0.4, 0],
+                opacity: [0, 0.7, 0.6, 0.4, 0],
+                y: [0, -120, -280, -420, -580],
+                scale: [0.3, 1, 0.85, 0.65, 0.3],
+                x: [0, props.sway * 0.4, -props.sway * 0.5, props.sway * 0.3, 0],
+                rotate: [props.rotation, props.rotation + 10, props.rotation - 5, props.rotation + 8, props.rotation]
             }}
             transition={{
                 duration: props.duration,
                 delay: props.delay,
-                ease: [0.25, 0.1, 0.25, 1], // Smooth ease-out
-                times: [0, 0.2, 0.5, 0.8, 1], // Control keyframe timing
+                ease: [0.25, 0.1, 0.25, 1],
+                times: [0, 0.2, 0.5, 0.8, 1],
             }}
             onAnimationComplete={() => onComplete(id)}
         >
-            {props.emoji}
+            <DoodleHeartFilled
+                size={props.size}
+                color={props.color}
+                style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))' }}
+            />
         </motion.div>
     );
 }
@@ -55,12 +67,10 @@ export default function FloatingHearts({ isActive }) {
     const heartIdRef = useRef(0);
     const spawnIntervalRef = useRef(null);
 
-    // Remove heart when animation completes
     const handleHeartComplete = useCallback((id) => {
         setHearts(prev => prev.filter(h => h.id !== id));
     }, []);
 
-    // Spawn a new heart
     const spawnHeart = useCallback(() => {
         const newHeart = { id: heartIdRef.current++ };
         setHearts(prev => [...prev, newHeart]);
@@ -77,12 +87,12 @@ export default function FloatingHearts({ isActive }) {
         }
 
         // Spawn initial batch with stagger
-        for (let i = 0; i < 6; i++) {
-            setTimeout(() => spawnHeart(), i * 300);
+        for (let i = 0; i < 5; i++) {
+            setTimeout(() => spawnHeart(), i * 350);
         }
 
-        // Continuous spawning - one heart every 800ms
-        spawnIntervalRef.current = setInterval(spawnHeart, 800);
+        // Continuous spawning
+        spawnIntervalRef.current = setInterval(spawnHeart, 900);
 
         return () => {
             if (spawnIntervalRef.current) {
@@ -97,7 +107,7 @@ export default function FloatingHearts({ isActive }) {
         <div className="fixed inset-0 overflow-hidden pointer-events-none z-20">
             <AnimatePresence>
                 {hearts.map((heart) => (
-                    <Heart
+                    <DoodleFloatingHeart
                         key={heart.id}
                         id={heart.id}
                         onComplete={handleHeartComplete}

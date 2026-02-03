@@ -124,6 +124,11 @@ export default function ShareScreen({ letterData, senderName, onBack, onPreview 
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 }}
                 >
+                    {shareUrl && shareUrl.length > 2000 && (
+                        <div className="mb-4 p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-xs font-handwritten">
+                            ⚠️ This link is quite long due to the photos. If it doesn't open, try using fewer or simpler photos.
+                        </div>
+                    )}
                     {!shareUrl ? (
                         <motion.button
                             onClick={handleGenerate}
