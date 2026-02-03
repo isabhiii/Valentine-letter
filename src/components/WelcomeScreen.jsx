@@ -45,7 +45,7 @@ export default function WelcomeScreen({ onWriteOwn, onUseDefault }) {
 
                 {/* Subtitle */}
                 <motion.p
-                    className="font-handwritten text-xl sm:text-2xl md:text-3xl text-[var(--ink-deep)] opacity-80 mb-10 px-4"
+                    className="font-handwritten text-lg sm:text-xl md:text-2xl text-[var(--ink-deep)] opacity-80 mb-10 px-4"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 0.8 }}
                     transition={{ delay: 0.6 }}
