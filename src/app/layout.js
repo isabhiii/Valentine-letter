@@ -1,4 +1,4 @@
-import { Playfair_Display, Lugrasimo } from 'next/font/google';
+import { Playfair_Display, Fondamento } from 'next/font/google';
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -7,7 +7,7 @@ const playfair = Playfair_Display({
   variable: '--font-serif',
 });
 
-const hand = Lugrasimo({
+const hand = Fondamento({
   weight: '400',
   subsets: ['latin'],
   display: 'swap',
