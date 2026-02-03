@@ -1,4 +1,24 @@
+import { Playfair_Display, Caveat, Great_Vibes } from 'next/font/google';
 import "./globals.css";
+
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-serif',
+});
+
+const caveat = Caveat({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-handwritten',
+});
+
+const greatVibes = Great_Vibes({
+  weight: '400',
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-premium-script',
+});
 
 export const metadata = {
   title: "A Letter For You ♥",
@@ -20,13 +40,8 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet" />
-      </head>
-      <body className="antialiased">
+    <html lang="en" className={`${playfair.variable} ${caveat.variable} ${greatVibes.variable}`}>
+      <body className="antialiased font-serif">
         {children}
       </body>
     </html>
