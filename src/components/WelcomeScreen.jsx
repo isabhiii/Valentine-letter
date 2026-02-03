@@ -89,7 +89,7 @@ export default function WelcomeScreen({ onWriteOwn, onUseDefault }) {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 0.3 }}
                 >
-                    Version 1.3.3 • Unger Chancery Regular Match
+                    Version 1.3.4 • HD Image Sync 📸
                 </motion.div>
 
                 {/* Footer note */}

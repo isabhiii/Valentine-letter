@@ -47,7 +47,7 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
                 img.onload = () => {
                     // Resize to smaller size for URL encoding (need to keep URL length safe)
                     const canvas = document.createElement('canvas');
-                    const maxSize = 120; // Aggressively small for URL sharing
+                    const maxSize = 400; // Increased for better clarity (400px is much sharper)
                     let { width, height } = img;
 
                     if (width > height) {
@@ -67,8 +67,8 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
 
-                    // Use webp for better compression
-                    const dataUrl = canvas.toDataURL('image/webp', 0.3);
+                    // Use webp with higher quality for "premium" photos
+                    const dataUrl = canvas.toDataURL('image/webp', 0.6);
                     setPhotos(prev => [...prev, { id: Date.now() + Math.random(), dataUrl }]);
                 };
                 img.src = event.target.result;
