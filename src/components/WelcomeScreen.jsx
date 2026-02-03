@@ -89,7 +89,7 @@ export default function WelcomeScreen({ onWriteOwn, onUseDefault }) {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 0.3 }}
                 >
-                    Version 1.3.0 • Premium Italic Serif
+                    Version 1.3.1 • Lucida Calligraphy Sync
                 </motion.div>
 
                 {/* Footer note */}

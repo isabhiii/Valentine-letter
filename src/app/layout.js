@@ -1,10 +1,17 @@
-import { Playfair_Display } from 'next/font/google';
+import { Playfair_Display, Lugrasimo } from 'next/font/google';
 import "./globals.css";
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-serif',
+});
+
+const hand = Lugrasimo({
+  weight: '400',
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-handwritten',
 });
 
 export const metadata = {
@@ -27,7 +34,7 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${playfair.variable}`}>
+    <html lang="en" className={`${playfair.variable} ${hand.variable}`}>
       <body className="antialiased font-serif">
         {children}
       </body>
