@@ -1,19 +1,4 @@
 import "./globals.css";
-import { Playfair_Display, Caveat } from 'next/font/google';
-
-const playfair = Playfair_Display({
-  subsets: ['latin'],
-  variable: '--font-playfair',
-  display: 'swap',
-  weight: ['400', '500', '600', '700'],
-});
-
-const caveat = Caveat({
-  subsets: ['latin'],
-  variable: '--font-caveat',
-  display: 'swap',
-  weight: ['400', '500', '600', '700'],
-});
 
 export const metadata = {
   title: "A Letter For You ♥",
@@ -35,8 +20,13 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${playfair.variable} ${caveat.variable}`}>
-      <body className={`${playfair.className} ${caveat.className} antialiased`}>
+    <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet" />
+      </head>
+      <body className="antialiased">
         {children}
       </body>
     </html>
