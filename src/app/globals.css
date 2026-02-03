@@ -19,8 +19,7 @@
 :root {
   /* Connect to Next.js Font Variables set in layout.js */
   --serif: var(--font-serif), "Playfair Display", Georgia, serif;
-  --hand: var(--font-premium-script), "Great Vibes", cursive;
-  --script: var(--font-premium-script), "Great Vibes", cursive;
+  --hand: var(--font-handwritten), "Dancing Script", cursive;
 
   /* Gradients */
   --romantic-gradient: linear-gradient(135deg, #fdfaf3 0%, #f8e8e8 100%);
@@ -89,12 +88,11 @@ body {
 /* Typography Styles */
 .handwritten-text {
   font-family: var(--hand) !important;
-  font-size: clamp(2.8rem, 10vw, 3.5rem) !important;
-  line-height: 1.1 !important;
+  font-size: clamp(2.2rem, 8vw, 2.6rem) !important;
+  line-height: 1.4 !important;
   color: var(--color-ink-deep);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
   font-weight: 500 !important;
-  text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.03);
 }
 
 .recipient-text {
@@ -107,13 +105,9 @@ body {
 
 .signature-text {
   font-family: var(--hand) !important;
-  font-size: clamp(3rem, 11vw, 3.8rem) !important;
+  font-size: clamp(2.5rem, 9vw, 3.2rem) !important;
   font-weight: 600 !important;
   color: var(--color-ink-deep);
-}
-
-.premium-script {
-  font-family: var(--script) !important;
 }
 
 /* Scratch overlay effect */

@@ -1,4 +1,4 @@
-import { Playfair_Display, Caveat, Great_Vibes } from 'next/font/google';
+import { Playfair_Display, Dancing_Script } from 'next/font/google';
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -7,17 +7,10 @@ const playfair = Playfair_Display({
   variable: '--font-serif',
 });
 
-const caveat = Caveat({
+const dancingScript = Dancing_Script({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-handwritten',
-});
-
-const greatVibes = Great_Vibes({
-  weight: '400',
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-premium-script',
 });
 
 export const metadata = {
@@ -40,7 +33,7 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${playfair.variable} ${caveat.variable} ${greatVibes.variable}`}>
+    <html lang="en" className={`${playfair.variable} ${dancingScript.variable}`}>
       <body className="antialiased font-serif">
         {children}
       </body>
