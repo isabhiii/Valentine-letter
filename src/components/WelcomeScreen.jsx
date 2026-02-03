@@ -89,7 +89,7 @@ export default function WelcomeScreen({ onWriteOwn, onUseDefault }) {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 0.3 }}
                 >
-                    Version 1.2.4 • Exact Font Match
+                    Version 1.3.0 • Premium Italic Serif
                 </motion.div>
 
                 {/* Footer note */}

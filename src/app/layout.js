@@ -1,16 +1,10 @@
-import { Playfair_Display, Dancing_Script } from 'next/font/google';
+import { Playfair_Display } from 'next/font/google';
 import "./globals.css";
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-serif',
-});
-
-const dancingScript = Dancing_Script({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-handwritten',
 });
 
 export const metadata = {
@@ -33,7 +27,7 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${playfair.variable} ${dancingScript.variable}`}>
+    <html lang="en" className={`${playfair.variable}`}>
       <body className="antialiased font-serif">
         {children}
       </body>

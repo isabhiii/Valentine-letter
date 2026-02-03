@@ -19,7 +19,8 @@
 :root {
   /* Connect to Next.js Font Variables set in layout.js */
   --serif: var(--font-serif), "Playfair Display", Georgia, serif;
-  --hand: var(--font-handwritten), "Dancing Script", cursive;
+  --hand: var(--font-serif), "Playfair Display", serif;
+  /* Consistency: Use Serif but styled */
 
   /* Gradients */
   --romantic-gradient: linear-gradient(135deg, #fdfaf3 0%, #f8e8e8 100%);
@@ -82,17 +83,21 @@ body {
 }
 
 .font-handwritten {
-  font-family: var(--hand) !important;
+  font-family: var(--serif) !important;
+  font-style: italic !important;
 }
 
 /* Typography Styles */
 .handwritten-text {
-  font-family: var(--hand) !important;
-  font-size: clamp(2.2rem, 8vw, 2.6rem) !important;
-  line-height: 1.4 !important;
+  font-family: var(--serif) !important;
+  font-style: italic !important;
+  font-size: clamp(1.4rem, 5vw, 1.8rem) !important;
+  /* Smaller, more elegant as per screenshot */
+  line-height: 1.6 !important;
   color: var(--color-ink-deep);
-  letter-spacing: 0.01em;
-  font-weight: 500 !important;
+  letter-spacing: 0.03em;
+  font-weight: 400 !important;
+  opacity: 0.8;
 }
 
 .recipient-text {
@@ -104,9 +109,10 @@ body {
 }
 
 .signature-text {
-  font-family: var(--hand) !important;
-  font-size: clamp(2.5rem, 9vw, 3.2rem) !important;
-  font-weight: 600 !important;
+  font-family: var(--serif) !important;
+  font-style: italic !important;
+  font-size: clamp(2rem, 8vw, 2.5rem) !important;
+  font-weight: 500 !important;
   color: var(--color-ink-deep);
 }
 
