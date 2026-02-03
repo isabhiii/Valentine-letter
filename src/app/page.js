@@ -188,6 +188,7 @@ export default function Home() {
         {appState === STATES.EDITOR && (
           <LetterEditor
             key="editor"
+            initialData={customLetter}
             onSave={handleSaveLetter}
             onCancel={handleCancelEditor}
           />

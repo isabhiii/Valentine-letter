@@ -9,14 +9,16 @@ import { DOODLE_STICKERS, DoodleSparkle, DoodleHeartFilled } from './DoodleIcons
 // Available stickers for selection
 const STICKER_OPTIONS = Object.entries(DOODLE_STICKERS);
 
-export default function LetterEditor({ onSave, onCancel }) {
-    const [recipient, setRecipient] = useState(LETTER_CONTENT.recipient);
-    const [letterText, setLetterText] = useState(LETTER_CONTENT.lines.join('\n'));
-    const [signature, setSignature] = useState(LETTER_CONTENT.signature);
-    const [senderName, setSenderName] = useState('');
-    const [selectedSticker, setSelectedSticker] = useState('heart');
+export default function LetterEditor({ onSave, onCancel, initialData }) {
+    const [recipient, setRecipient] = useState(initialData?.recipient || LETTER_CONTENT.recipient);
+    const [letterText, setLetterText] = useState(initialData?.lines?.join('\n') || LETTER_CONTENT.lines.join('\n'));
+    const [signature, setSignature] = useState(initialData?.signature || LETTER_CONTENT.signature);
+    const [senderName, setSenderName] = useState(initialData?.senderName || '');
+    const [selectedSticker, setSelectedSticker] = useState(initialData?.sticker || 'heart');
     const [showStickerPicker, setShowStickerPicker] = useState(false);
-    const [photos, setPhotos] = useState([]); // Array of { id, dataUrl }
+    const [photos, setPhotos] = useState(
+        initialData?.photos?.map(url => ({ id: Math.random(), dataUrl: url })) || []
+    ); // Array of { id, dataUrl }
     const fileInputRef = useRef(null);
 
     const handleSave = () => {
