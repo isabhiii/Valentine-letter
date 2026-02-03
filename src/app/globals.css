@@ -1,24 +1,35 @@
 @import "tailwindcss";
 
-:root {
-  /* Color Palette */
-  --paper-cream: #fdfaf3;
-  --paper-shadow: #f5efe3;
-  --ink-deep: #2c1810;
-  --rose-blush: #e8a4a4;
-  --heart-red: #c41e3a;
-  --gold-accent: #d4af37;
-  --scratch-overlay: #f0e6d3;
-  --ash-gray: #8b8680;
+@theme {
+  /* Fonts - mapped to Next.js variables */
+  --font-serif: var(--font-serif);
+  --font-handwritten: var(--font-handwritten);
 
-  /* Gradients */
+  /* Colors */
+  --color-paper-cream: #fdfaf3;
+  --color-paper-shadow: #f5efe3;
+  --color-ink-deep: #2c1810;
+  --color-rose-blush: #e8a4a4;
+  --color-heart-red: #c41e3a;
+  --color-gold-accent: #d4af37;
+  --color-scratch-overlay: #f0e6d3;
+  --color-ash-gray: #8b8680;
+
+  /* Easing */
+  --ease-premium: cubic-bezier(0.43, 0.13, 0.23, 0.96);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root {
+  /* Gradients can't be in @theme directly in the same way, keeping as vars */
   --romantic-gradient: linear-gradient(135deg, #fdfaf3 0%, #f8e8e8 100%);
   --burn-gradient: radial-gradient(circle, transparent 30%, #2c1810 70%);
   --scratch-gradient: linear-gradient(145deg, #f5e6d3 0%, #e8d4c4 50%, #f0e0d0 100%);
 
-  /* Premium Easing */
-  --ease-premium: cubic-bezier(0.43, 0.13, 0.23, 0.96);
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Fallback for components accessing vars directly if any */
+  --ink-deep: #2c1810;
+  --rose-blush: #e8a4a4;
+  --heart-red: #c41e3a;
 }
 
 * {
@@ -63,14 +74,7 @@ body {
     0 32px 32px rgba(0, 0, 0, 0.02);
 }
 
-/* Typography Styles */
-.font-serif {
-  font-family: var(--font-serif);
-}
-
-.font-handwritten {
-  font-family: var(--font-handwritten);
-}
+/* Typography Styles - Handled by Tailwind @theme now */
 
 /* Handwritten text styling */
 .handwritten-text {
