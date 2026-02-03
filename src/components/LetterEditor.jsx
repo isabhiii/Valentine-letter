@@ -47,7 +47,7 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
                 img.onload = () => {
                     // Resize to smaller size for URL encoding (need to keep URL length safe)
                     const canvas = document.createElement('canvas');
-                    const maxSize = 180; // Small enough for URL sharing
+                    const maxSize = 120; // Aggressively small for URL sharing
                     let { width, height } = img;
 
                     if (width > height) {
@@ -68,7 +68,7 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
                     ctx.drawImage(img, 0, 0, width, height);
 
                     // Use webp for better compression
-                    const dataUrl = canvas.toDataURL('image/webp', 0.5);
+                    const dataUrl = canvas.toDataURL('image/webp', 0.3);
                     setPhotos(prev => [...prev, { id: Date.now() + Math.random(), dataUrl }]);
                 };
                 img.src = event.target.result;
@@ -348,8 +348,8 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
                         </motion.button>
                         <motion.button
                             onClick={handleSave}
-                            className="flex-1 px-6 py-3 rounded-full bg-gradient-to-r from-[var(--heart-red)] to-[#e05555]
-                text-white font-handwritten text-lg shadow-lg shadow-red-500/20
+                            className="flex-1 px-6 py-3 rounded-full bg-gradient-to-r from-[var(--heart-red)] to-[#ff4b4b]
+                text-white font-handwritten text-xl shadow-lg shadow-red-500/20
                 hover:shadow-xl hover:shadow-red-500/30 transition-all flex items-center justify-center gap-2"
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}

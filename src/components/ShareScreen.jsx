@@ -124,15 +124,10 @@ export default function ShareScreen({ letterData, senderName, onBack, onPreview 
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 }}
                 >
-                    {shareUrl && shareUrl.length > 2000 && (
-                        <div className="mb-4 p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-xs font-handwritten">
-                            ⚠️ This link is quite long due to the photos. If it doesn't open, try using fewer or simpler photos.
-                        </div>
-                    )}
                     {!shareUrl ? (
                         <motion.button
                             onClick={handleGenerate}
-                            className="w-full py-4 rounded-xl bg-gradient-to-r from-[var(--heart-red)] to-[#e05555]
+                            className="w-full py-4 rounded-xl bg-gradient-to-r from-[var(--heart-red)] to-[#ff4b4b]
                 text-white font-handwritten text-xl shadow-lg shadow-red-500/20"
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
@@ -149,7 +144,7 @@ export default function ShareScreen({ letterData, senderName, onBack, onPreview 
                                     Creating Magic...
                                 </span>
                             ) : (
-                                '✨ Generate Share Link'
+                                '✨ Prepare Magical Link'
                             )}
                         </motion.button>
                     ) : (
