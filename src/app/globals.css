@@ -19,7 +19,7 @@
 :root {
   /* Connect to Next.js Font Variables set in layout.js */
   --serif: var(--font-serif), "Playfair Display", Georgia, serif;
-  --hand: var(--font-handwritten), "Unger Chancery Std", "Apple Chancery", cursive;
+  --hand: "Unger Chancery Regular", "Unger Chancery Std", "Unger Chancery", "Apple Chancery", cursive;
 
   /* Gradients */
   --romantic-gradient: linear-gradient(135deg, #fdfaf3 0%, #f8e8e8 100%);
