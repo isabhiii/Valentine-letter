@@ -1,65 +1,277 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useCallback, useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import WelcomeScreen from '@/components/WelcomeScreen';
+import LetterEditor from '@/components/LetterEditor';
+import ShareScreen from '@/components/ShareScreen';
+import RecipientIntro from '@/components/RecipientIntro';
+import EnvelopeIntro from '@/components/EnvelopeIntro';
+import WaxSealReveal from '@/components/WaxSealReveal';
+import LetterContainer from '@/components/LetterContainer';
+import HandwrittenText from '@/components/HandwrittenText';
+import FloatingHearts from '@/components/FloatingHearts';
+import BurnTimer from '@/components/BurnTimer';
+import { LETTER_CONTENT } from '@/lib/constants';
+import { parseLetterFromUrl, hasSharedLetter } from '@/lib/shareUtils';
+import { burnVariants } from '@/lib/animations';
+
+// App states
+const STATES = {
+  LOADING: 'loading',
+  WELCOME: 'welcome',
+  EDITOR: 'editor',
+  SHARE: 'share',
+  RECIPIENT_INTRO: 'recipient_intro',
+  ENVELOPE: 'envelope',
+  SEAL: 'seal',
+  REVEAL: 'reveal',
+  BURNING: 'burning'
+};
 
 export default function Home() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.js file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+  const [appState, setAppState] = useState(STATES.LOADING);
+  const [customLetter, setCustomLetter] = useState(null);
+  const [senderName, setSenderName] = useState('');
+  const [isRecipientMode, setIsRecipientMode] = useState(false);
+  const [showHearts, setShowHearts] = useState(false);
+  const [timerActive, setTimerActive] = useState(false);
+  const [isBurning, setIsBurning] = useState(false);
+
+  // Check for shared letter on mount
+  useEffect(() => {
+    if (hasSharedLetter()) {
+      const parsed = parseLetterFromUrl();
+      if (parsed) {
+        setCustomLetter(parsed.letter);
+        setSenderName(parsed.from || '');
+        setIsRecipientMode(true);
+        setAppState(STATES.RECIPIENT_INTRO);
+      } else {
+        setAppState(STATES.WELCOME);
+      }
+    } else {
+      setAppState(STATES.WELCOME);
+    }
+  }, []);
+
+  // Get current letter content
+  const currentLetter = customLetter || LETTER_CONTENT;
+
+  // Handle welcome screen choices
+  const handleWriteOwn = useCallback(() => {
+    setAppState(STATES.EDITOR);
+  }, []);
+
+  const handleUseDefault = useCallback(() => {
+    setCustomLetter(null);
+    setAppState(STATES.ENVELOPE);
+  }, []);
+
+  // Handle letter editor
+  const handleSaveLetter = useCallback((letterData) => {
+    setCustomLetter(letterData);
+    setSenderName(letterData.senderName || '');
+    setAppState(STATES.SHARE);
+  }, []);
+
+  const handleCancelEditor = useCallback(() => {
+    setAppState(STATES.WELCOME);
+  }, []);
+
+  // Handle share screen
+  const handleBackToEditor = useCallback(() => {
+    setAppState(STATES.EDITOR);
+  }, []);
+
+  const handlePreviewLetter = useCallback(() => {
+    setAppState(STATES.ENVELOPE);
+  }, []);
+
+  // Handle recipient intro
+  const handleRecipientOpen = useCallback(() => {
+    setAppState(STATES.ENVELOPE);
+  }, []);
+
+  // Handle envelope open
+  const handleEnvelopeOpen = useCallback(() => {
+    setAppState(STATES.SEAL);
+  }, []);
+
+  // Handle seal break reveal complete
+  const handleSealReveal = useCallback(() => {
+    setAppState(STATES.REVEAL);
+  }, []);
+
+  // Handle text animation complete
+  const handleTextComplete = useCallback(() => {
+    setShowHearts(true);
+    setTimerActive(true);
+  }, []);
+
+  // Handle burn complete
+  const handleBurnComplete = useCallback(() => {
+    setIsBurning(true);
+    setAppState(STATES.BURNING);
+  }, []);
+
+  // Handle replay
+  const handleReplay = useCallback(() => {
+    // If recipient mode, just restart the recipient flow
+    if (isRecipientMode) {
+      setAppState(STATES.RECIPIENT_INTRO);
+    } else {
+      // Clear URL params and go to welcome
+      if (typeof window !== 'undefined') {
+        window.history.replaceState({}, '', window.location.pathname);
+      }
+      setAppState(STATES.WELCOME);
+      setCustomLetter(null);
+      setSenderName('');
+      setIsRecipientMode(false);
+    }
+    setShowHearts(false);
+    setTimerActive(false);
+    setIsBurning(false);
+  }, [isRecipientMode]);
+
+  // Loading state
+  if (appState === STATES.LOADING) {
+    return (
+      <main className="min-h-screen min-h-dvh flex items-center justify-center">
+        <div className="grain-overlay" />
+        <motion.div
+          className="text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
+          <motion.div
+            className="text-5xl mb-4"
+            animate={{
+              scale: [1, 1.1, 1],
+              rotate: [0, 5, -5, 0]
+            }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          >
+            💌
+          </motion.div>
+          <p className="font-handwritten text-xl text-[var(--ink-deep)] opacity-60">
+            Loading something special...
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+        </motion.div>
       </main>
-    </div>
+    );
+  }
+
+  return (
+    <main className="min-h-screen min-h-dvh flex flex-col items-center justify-start py-8 px-4 overflow-y-auto overflow-x-hidden">
+      {/* Grain overlay for premium feel */}
+      <div className="grain-overlay" />
+
+      {/* Welcome screen (sender mode) */}
+      <AnimatePresence mode="wait">
+        {appState === STATES.WELCOME && (
+          <WelcomeScreen
+            key="welcome"
+            onWriteOwn={handleWriteOwn}
+            onUseDefault={handleUseDefault}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Letter editor */}
+      <AnimatePresence mode="wait">
+        {appState === STATES.EDITOR && (
+          <LetterEditor
+            key="editor"
+            onSave={handleSaveLetter}
+            onCancel={handleCancelEditor}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Share screen */}
+      <AnimatePresence mode="wait">
+        {appState === STATES.SHARE && (
+          <ShareScreen
+            key="share"
+            letterData={customLetter}
+            senderName={senderName}
+            onBack={handleBackToEditor}
+            onPreview={handlePreviewLetter}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Recipient intro (when opening shared link) */}
+      <AnimatePresence mode="wait">
+        {appState === STATES.RECIPIENT_INTRO && (
+          <RecipientIntro
+            key="recipient-intro"
+            senderName={senderName}
+            onOpen={handleRecipientOpen}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Envelope intro */}
+      <AnimatePresence mode="wait">
+        {appState === STATES.ENVELOPE && (
+          <EnvelopeIntro key="envelope" onOpen={handleEnvelopeOpen} />
+        )}
+      </AnimatePresence>
+
+      {/* Scratch to reveal */}
+      <AnimatePresence mode="wait">
+        {appState === STATES.SEAL && !isBurning && (
+          <motion.div
+            key="scratch"
+            className="w-full max-w-[600px]"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.5 }}
+          >
+            <LetterContainer>
+              <WaxSealReveal onRevealComplete={handleSealReveal} />
+            </LetterContainer>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Letter reveal */}
+      <AnimatePresence mode="wait">
+        {appState === STATES.REVEAL && !isBurning && (
+          <motion.div
+            key="letter"
+            className="w-full max-w-[600px]"
+            variants={burnVariants}
+            initial="initial"
+            animate={isBurning ? "burning" : "initial"}
+          >
+            <LetterContainer>
+              <HandwrittenText
+                letterContent={currentLetter}
+                onComplete={handleTextComplete}
+              />
+            </LetterContainer>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Floating hearts */}
+      <FloatingHearts isActive={showHearts && !isBurning} />
+
+      {/* Burn timer */}
+      <BurnTimer
+        isActive={timerActive}
+        onBurnComplete={handleBurnComplete}
+        onReplay={handleReplay}
+      />
+    </main>
   );
 }

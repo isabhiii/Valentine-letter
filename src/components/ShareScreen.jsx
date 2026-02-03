@@ -1,0 +1,260 @@
+'use client';
+
+import { useState, useRef } from 'react';
+import { motion } from 'framer-motion';
+import { generateShareUrl } from '@/lib/shareUtils';
+import { SPRING_GENTLE, PREMIUM_EASE, EASE_OUT_EXPO } from '@/lib/animations';
+
+export default function ShareScreen({ letterData, senderName, onBack, onPreview }) {
+    const [shareUrl, setShareUrl] = useState('');
+    const [copied, setCopied] = useState(false);
+    const [isGenerating, setIsGenerating] = useState(false);
+    const inputRef = useRef(null);
+
+    // Generate URL on mount
+    useState(() => {
+        const url = generateShareUrl(letterData, senderName);
+        if (url) {
+            setShareUrl(url);
+        }
+    }, [letterData, senderName]);
+
+    // Generate the share URL
+    const handleGenerate = () => {
+        setIsGenerating(true);
+        setTimeout(() => {
+            const url = generateShareUrl(letterData, senderName);
+            if (url) {
+                setShareUrl(url);
+            }
+            setIsGenerating(false);
+        }, 800); // Small delay for effect
+    };
+
+    // Copy to clipboard
+    const handleCopy = async () => {
+        if (!shareUrl) return;
+
+        try {
+            await navigator.clipboard.writeText(shareUrl);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        } catch (err) {
+            // Fallback for older browsers
+            if (inputRef.current) {
+                inputRef.current.select();
+                document.execCommand('copy');
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+            }
+        }
+    };
+
+    // Share via native share API
+    const handleNativeShare = async () => {
+        if (!shareUrl || !navigator.share) return;
+
+        try {
+            await navigator.share({
+                title: 'A Love Letter For You 💌',
+                text: `${senderName || 'Someone special'} has written you a Valentine's letter`,
+                url: shareUrl
+            });
+        } catch (err) {
+            // User cancelled or error - silently fail
+        }
+    };
+
+    const hasNativeShare = typeof navigator !== 'undefined' && navigator.share;
+
+    return (
+        <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+                background: 'linear-gradient(135deg, rgba(253,250,243,0.98) 0%, rgba(248,232,232,0.98) 100%)'
+            }}
+        >
+            <motion.div
+                className="w-full max-w-md paper-texture letter-shadow rounded-2xl p-8 sm:p-10 my-8"
+                initial={{ scale: 0.9, y: 30 }}
+                animate={{ scale: 1, y: 0 }}
+                transition={SPRING_GENTLE}
+            >
+                {/* Success Icon */}
+                <motion.div
+                    className="text-center mb-6"
+                    initial={{ scale: 0, rotate: -180 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{
+                        delay: 0.2,
+                        type: "spring",
+                        stiffness: 200,
+                        damping: 12
+                    }}
+                >
+                    <div className="text-6xl">💌</div>
+                </motion.div>
+
+                {/* Title */}
+                <motion.h1
+                    className="font-serif text-2xl sm:text-3xl text-[var(--ink-deep)] text-center mb-2"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                >
+                    Your Letter is Ready!
+                </motion.h1>
+
+                <motion.p
+                    className="font-handwritten text-lg text-[var(--ink-deep)] text-center opacity-70 mb-8"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.7 }}
+                    transition={{ delay: 0.4 }}
+                >
+                    Share this magical link with your Valentine ✨
+                </motion.p>
+
+                {/* URL Display */}
+                <motion.div
+                    className="mb-6"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 }}
+                >
+                    {!shareUrl ? (
+                        <motion.button
+                            onClick={handleGenerate}
+                            className="w-full py-4 rounded-xl bg-gradient-to-r from-[var(--heart-red)] to-[#e05555]
+                text-white font-handwritten text-xl shadow-lg shadow-red-500/20"
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            disabled={isGenerating}
+                        >
+                            {isGenerating ? (
+                                <span className="flex items-center justify-center gap-2">
+                                    <motion.span
+                                        animate={{ rotate: 360 }}
+                                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                                    >
+                                        ✨
+                                    </motion.span>
+                                    Creating Magic...
+                                </span>
+                            ) : (
+                                '✨ Generate Share Link'
+                            )}
+                        </motion.button>
+                    ) : (
+                        <div className="space-y-3">
+                            <div className="relative">
+                                <input
+                                    ref={inputRef}
+                                    type="text"
+                                    value={shareUrl}
+                                    readOnly
+                                    className="w-full px-4 py-3 pr-24 rounded-xl bg-white/70 border border-[var(--rose-blush)]/30 
+                    font-mono text-sm text-[var(--ink-deep)] truncate
+                    focus:outline-none focus:border-[var(--heart-red)]/50"
+                                />
+                                <button
+                                    onClick={handleCopy}
+                                    className={`absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1.5 rounded-lg
+                    font-handwritten text-sm transition-all
+                    ${copied
+                                            ? 'bg-green-500 text-white'
+                                            : 'bg-[var(--heart-red)] text-white hover:bg-[#b01830]'
+                                        }`}
+                                >
+                                    {copied ? '✓ Copied!' : 'Copy'}
+                                </button>
+                            </div>
+
+                            {/* Share buttons */}
+                            <div className="flex gap-3">
+                                {hasNativeShare && (
+                                    <motion.button
+                                        onClick={handleNativeShare}
+                                        className="flex-1 py-3 rounded-xl bg-gradient-to-r from-[#25D366] to-[#128C7E]
+                      text-white font-handwritten text-lg shadow-md"
+                                        whileHover={{ scale: 1.02 }}
+                                        whileTap={{ scale: 0.98 }}
+                                    >
+                                        📤 Share
+                                    </motion.button>
+                                )}
+                                <motion.button
+                                    onClick={handleCopy}
+                                    className="flex-1 py-3 rounded-xl bg-gradient-to-r from-[var(--heart-red)] to-[#e05555]
+                    text-white font-handwritten text-lg shadow-md shadow-red-500/20"
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
+                                >
+                                    {copied ? '✓ Copied!' : '📋 Copy Link'}
+                                </motion.button>
+                            </div>
+                        </div>
+                    )}
+                </motion.div>
+
+                {/* What recipient will see */}
+                {shareUrl && (
+                    <motion.div
+                        className="mb-6 p-4 rounded-xl bg-[var(--rose-blush)]/10 border border-[var(--rose-blush)]/20"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.7 }}
+                    >
+                        <p className="font-handwritten text-sm text-[var(--ink-deep)] text-center">
+                            <span className="opacity-60">When they open the link, they'll see:</span>
+                            <br />
+                            <span className="text-lg font-semibold">
+                                "{senderName || 'Someone special'} has written you a love letter..."
+                            </span>
+                        </p>
+                    </motion.div>
+                )}
+
+                {/* Action buttons */}
+                <motion.div
+                    className="flex gap-3"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.8 }}
+                >
+                    <motion.button
+                        onClick={onBack}
+                        className="flex-1 py-3 rounded-xl border-2 border-[var(--ink-deep)]/20 
+              text-[var(--ink-deep)] font-handwritten text-lg
+              hover:bg-[var(--ink-deep)]/5 transition-colors"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                    >
+                        ← Edit Letter
+                    </motion.button>
+                    <motion.button
+                        onClick={onPreview}
+                        className="flex-1 py-3 rounded-xl bg-[var(--ink-deep)] 
+              text-white font-handwritten text-lg"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                    >
+                        👁️ Preview
+                    </motion.button>
+                </motion.div>
+
+                {/* Tip */}
+                <motion.p
+                    className="mt-6 text-center font-handwritten text-sm text-[var(--ink-deep)] opacity-40"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.4 }}
+                    transition={{ delay: 1 }}
+                >
+                    💡 The letter will self-destruct 60 seconds after reading
+                </motion.p>
+            </motion.div>
+        </motion.div>
+    );
+}
