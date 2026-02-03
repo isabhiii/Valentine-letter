@@ -83,13 +83,11 @@ body {
 
 .font-handwritten {
   font-family: var(--hand) !important;
-  font-style: italic !important;
 }
 
 /* Typography Styles */
 .handwritten-text {
   font-family: var(--hand) !important;
-  font-style: italic !important;
   font-size: clamp(1.6rem, 5.5vw, 2rem) !important;
   line-height: 1.5 !important;
   color: var(--color-ink-deep);
@@ -107,7 +105,6 @@ body {
 
 .signature-text {
   font-family: var(--hand) !important;
-  font-style: italic !important;
   font-size: clamp(2.2rem, 9vw, 2.8rem) !important;
   font-weight: 600 !important;
   color: var(--color-ink-deep);
