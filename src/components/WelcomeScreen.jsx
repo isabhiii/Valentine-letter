@@ -62,7 +62,7 @@ export default function WelcomeScreen({ onWriteOwn, onUseDefault }) {
                 >
                     <motion.button
                         onClick={onWriteOwn}
-                        className="w-full px-8 py-4 rounded-full bg-gradient-to-r from-[var(--heart-red)] to-[#e05555]
+                        className="w-full px-8 py-4 rounded-full bg-gradient-to-r from-[var(--heart-red)] to-[#ff4b4b]
               text-white font-handwritten text-2xl shadow-lg shadow-red-500/25
               hover:shadow-xl hover:shadow-red-500/35 transition-all"
                         whileHover={{ scale: 1.03 }}
@@ -83,9 +83,18 @@ export default function WelcomeScreen({ onWriteOwn, onUseDefault }) {
                     </motion.button>
                 </motion.div>
 
+                {/* Status Indicator */}
+                <motion.div
+                    className="mt-12 text-[10px] uppercase tracking-widest text-[var(--ink-deep)] opacity-30 font-serif"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.3 }}
+                >
+                    Version 1.2.1 • Design Refined
+                </motion.div>
+
                 {/* Footer note */}
                 <motion.p
-                    className="mt-8 font-handwritten text-sm text-[var(--ink-deep)] opacity-40"
+                    className="mt-4 font-handwritten text-sm text-[var(--ink-deep)] opacity-40"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 0.4 }}
                     transition={{ delay: 1.2 }}

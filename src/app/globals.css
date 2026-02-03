@@ -1,10 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,400;1,500;1,600;1,700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  /* Fonts - literal names for maximum reliability */
-  --font-serif: "Playfair Display", serif;
-  --font-handwritten: "Caveat", cursive;
-
   /* Colors */
   --color-paper-cream: #fdfaf3;
   --color-paper-shadow: #f5efe3;
@@ -21,17 +18,21 @@
 }
 
 :root {
-  /* Gradients can't be in @theme directly in the same way, keeping as vars */
+  /* Explicit font families with literals to bypass theme issues */
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-handwritten: "Caveat", cursive;
+
+  /* Gradients */
   --romantic-gradient: linear-gradient(135deg, #fdfaf3 0%, #f8e8e8 100%);
   --burn-gradient: radial-gradient(circle, transparent 30%, #2c1810 70%);
   --scratch-gradient: linear-gradient(145deg, #f5e6d3 0%, #e8d4c4 50%, #f0e0d0 100%);
 
-  /* Fallback for components accessing vars directly if any */
   --ink-deep: #2c1810;
   --rose-blush: #e8a4a4;
   --heart-red: #c41e3a;
 }
 
+/* Force global font defaults */
 * {
   box-sizing: border-box;
 }
@@ -49,19 +50,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Force Tailwind classes to use correct fonts with !important */
-.font-serif {
-  font-family: "Playfair Display", serif !important;
-}
-
-.font-handwritten {
-  font-family: "Caveat", cursive !important;
-}
-
 /* Paper Texture Overlay */
 .paper-texture {
   position: relative;
-  background-color: var(--paper-cream);
+  background-color: var(--color-paper-cream);
 }
 
 .paper-texture::before {
@@ -85,9 +77,16 @@ body {
     0 32px 32px rgba(0, 0, 0, 0.02);
 }
 
-/* Typography Styles */
+/* Hard-override Tailwind utility classes to ensure they use our fonts */
+.font-serif {
+  font-family: "Playfair Display", serif !important;
+}
 
-/* Handwritten text styling */
+.font-handwritten {
+  font-family: "Caveat", cursive !important;
+}
+
+/* Typography Styles */
 .handwritten-text {
   font-family: "Caveat", cursive !important;
   font-size: clamp(2.2rem, 8vw, 2.8rem) !important;
@@ -97,17 +96,14 @@ body {
   font-weight: 600 !important;
 }
 
-/* Recipient styling */
 .recipient-text {
   font-family: "Playfair Display", serif !important;
   font-size: clamp(2.5rem, 9vw, 3.5rem) !important;
   font-weight: 700 !important;
   font-style: italic;
   color: var(--color-ink-deep);
-  letter-spacing: 0.02em;
 }
 
-/* Signature styling */
 .signature-text {
   font-family: "Caveat", cursive !important;
   font-size: clamp(2.5rem, 9vw, 3rem) !important;
