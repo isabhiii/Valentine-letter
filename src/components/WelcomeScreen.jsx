@@ -35,7 +35,7 @@ export default function WelcomeScreen({ onWriteOwn, onUseDefault }) {
 
                 {/* Title */}
                 <motion.h1
-                    className="font-serif text-3xl sm:text-4xl text-[var(--ink-deep)] mb-3"
+                    className="font-serif text-4xl sm:text-5xl text-[var(--ink-deep)] mb-3"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 }}
@@ -45,9 +45,9 @@ export default function WelcomeScreen({ onWriteOwn, onUseDefault }) {
 
                 {/* Subtitle */}
                 <motion.p
-                    className="font-handwritten text-xl text-[var(--ink-deep)] opacity-70 mb-10"
+                    className="font-handwritten text-2xl sm:text-3xl text-[var(--ink-deep)] opacity-80 mb-10"
                     initial={{ opacity: 0 }}
-                    animate={{ opacity: 0.7 }}
+                    animate={{ opacity: 0.8 }}
                     transition={{ delay: 0.6 }}
                 >
                     Create something beautiful for someone special
@@ -63,7 +63,7 @@ export default function WelcomeScreen({ onWriteOwn, onUseDefault }) {
                     <motion.button
                         onClick={onWriteOwn}
                         className="w-full px-8 py-4 rounded-full bg-gradient-to-r from-[var(--heart-red)] to-[#e05555]
-              text-white font-handwritten text-xl shadow-lg shadow-red-500/25
+              text-white font-handwritten text-2xl shadow-lg shadow-red-500/25
               hover:shadow-xl hover:shadow-red-500/35 transition-all"
                         whileHover={{ scale: 1.03 }}
                         whileTap={{ scale: 0.98 }}
@@ -74,7 +74,7 @@ export default function WelcomeScreen({ onWriteOwn, onUseDefault }) {
                     <motion.button
                         onClick={onUseDefault}
                         className="w-full px-8 py-4 rounded-full border-2 border-[var(--rose-blush)]
-              text-[var(--ink-deep)] font-handwritten text-xl
+              text-[var(--ink-deep)] font-handwritten text-2xl
               hover:bg-[var(--rose-blush)]/10 transition-colors"
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}

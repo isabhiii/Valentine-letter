@@ -3,14 +3,16 @@ import { Playfair_Display, Caveat } from 'next/font/google';
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
-  variable: '--font-serif',
+  variable: '--font-playfair',
   display: 'swap',
+  weight: ['400', '500', '600', '700'],
 });
 
 const caveat = Caveat({
   subsets: ['latin'],
-  variable: '--font-handwritten',
+  variable: '--font-caveat',
   display: 'swap',
+  weight: ['400', '500', '600', '700'],
 });
 
 export const metadata = {
@@ -34,7 +36,7 @@ export const viewport = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${playfair.variable} ${caveat.variable}`}>
-      <body className="antialiased">
+      <body className={`${playfair.className} ${caveat.className} antialiased`}>
         {children}
       </body>
     </html>
