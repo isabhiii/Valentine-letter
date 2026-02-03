@@ -1,4 +1,5 @@
-import { Playfair_Display, Fondamento } from 'next/font/google';
+import { Playfair_Display } from 'next/font/google';
+import localFont from 'next/font/local';
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -7,11 +8,10 @@ const playfair = Playfair_Display({
   variable: '--font-serif',
 });
 
-const hand = Fondamento({
-  weight: '400',
-  subsets: ['latin'],
-  display: 'swap',
+const hand = localFont({
+  src: './fonts/UngerChancery.ttf',
   variable: '--font-handwritten',
+  display: 'swap',
 });
 
 export const metadata = {
