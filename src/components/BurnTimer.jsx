@@ -3,25 +3,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TIMING } from '@/lib/constants';
-import { timerPulseVariants, PREMIUM_EASE } from '@/lib/animations';
-
-// Simplified ember - just CSS animations, no JS tracking
-function Ember({ style }) {
-    return (
-        <div
-            className="absolute w-1.5 h-1.5 rounded-full animate-ember"
-            style={{
-                ...style,
-                background: 'radial-gradient(circle, #ffaa00 0%, #ff6600 100%)',
-                boxShadow: '0 0 6px #ff6600',
-            }}
-        />
-    );
-}
+import { PREMIUM_EASE } from '@/lib/animations';
+import FireEffect from './FireEffect';
 
 export default function BurnTimer({ isActive, onBurnComplete, onReplay }) {
     const [timeLeft, setTimeLeft] = useState(TIMING.BURN_COUNTDOWN);
     const [isBurning, setIsBurning] = useState(false);
+    const [burnPhase, setBurnPhase] = useState(0); // 0 to 1 progression
     const [showFinalMessage, setShowFinalMessage] = useState(false);
 
     // Countdown timer
@@ -42,16 +30,36 @@ export default function BurnTimer({ isActive, onBurnComplete, onReplay }) {
         return () => clearInterval(timer);
     }, [isActive, isBurning]);
 
-    // Start burn effect - simplified, CSS-driven
+    // Burn phase progression (0 to 1 over 4 seconds)
+    useEffect(() => {
+        if (!isBurning || showFinalMessage) return;
+
+        const duration = 4000; // 4 second burn
+        const startTime = Date.now();
+
+        const updatePhase = () => {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(1, elapsed / duration);
+            setBurnPhase(progress);
+
+            if (progress < 1) {
+                requestAnimationFrame(updatePhase);
+            } else {
+                // Burn complete
+                setTimeout(() => {
+                    setShowFinalMessage(true);
+                    onBurnComplete?.();
+                }, 200);
+            }
+        };
+
+        requestAnimationFrame(updatePhase);
+    }, [isBurning, showFinalMessage, onBurnComplete]);
+
     const startBurn = useCallback(() => {
         setIsBurning(true);
-
-        // Show final message after burn animation
-        setTimeout(() => {
-            setShowFinalMessage(true);
-            onBurnComplete?.();
-        }, 2000);
-    }, [onBurnComplete]);
+        setBurnPhase(0);
+    }, []);
 
     const formatTime = (seconds) => {
         const mins = Math.floor(seconds / 60);
@@ -64,6 +72,7 @@ export default function BurnTimer({ isActive, onBurnComplete, onReplay }) {
     const handleReplay = () => {
         setTimeLeft(TIMING.BURN_COUNTDOWN);
         setIsBurning(false);
+        setBurnPhase(0);
         setShowFinalMessage(false);
         onReplay?.();
     };
@@ -88,8 +97,10 @@ export default function BurnTimer({ isActive, onBurnComplete, onReplay }) {
                                     ? 'bg-[var(--heart-red)]/15 text-[var(--heart-red)]'
                                     : 'bg-[var(--gold-accent)]/15 text-[var(--gold-accent)]'
                                 }`}
-                            variants={timerPulseVariants}
-                            animate={isWarning ? "warning" : "normal"}
+                            animate={isWarning ? {
+                                scale: [1, 1.05, 1],
+                                transition: { duration: 0.8, repeat: Infinity }
+                            } : {}}
                         >
                             <span className="opacity-70">This letter will vanish in </span>
                             <span className="font-bold">{formatTime(timeLeft)}</span>
@@ -98,48 +109,60 @@ export default function BurnTimer({ isActive, onBurnComplete, onReplay }) {
                 )}
             </AnimatePresence>
 
-            {/* Burn overlay - simplified CSS-driven animation */}
+            {/* REALISTIC BURN EFFECT */}
             <AnimatePresence>
                 {isBurning && !showFinalMessage && (
                     <motion.div
-                        className="fixed inset-0 z-50 pointer-events-none"
+                        className="fixed inset-0 z-50"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.3 }}
                     >
-                        {/* Vignette burn effect */}
-                        <motion.div
-                            className="absolute inset-0 burn-vignette"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ duration: 1.5 }}
-                        />
-
-                        {/* Center darkening */}
+                        {/* Paper texture that burns */}
                         <motion.div
                             className="absolute inset-0"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 0.9 }}
-                            transition={{ duration: 1.8, delay: 0.5 }}
                             style={{
-                                background: 'radial-gradient(ellipse at center, rgba(15,10,5,0.95) 0%, rgba(10,5,0,1) 100%)'
+                                background: 'linear-gradient(135deg, #fdf8f0 0%, #f5e6d3 50%, #e8d5c0 100%)',
+                            }}
+                            animate={{
+                                filter: `brightness(${1 + burnPhase * 0.5}) sepia(${burnPhase * 0.5}) contrast(${1 + burnPhase * 0.3})`,
+                            }}
+                            transition={{ duration: 0.1 }}
+                        />
+
+                        {/* Fire effects layer */}
+                        <FireEffect intensity={1} burnPhase={burnPhase} />
+
+                        {/* Crackling light flicker overlay */}
+                        <motion.div
+                            className="absolute inset-0 pointer-events-none"
+                            style={{
+                                background: 'radial-gradient(ellipse at 50% 50%, rgba(255,150,50,0.1) 0%, transparent 70%)',
+                            }}
+                            animate={{
+                                opacity: burnPhase > 0 ? [0.3, 0.6, 0.4, 0.7, 0.3] : 0,
+                            }}
+                            transition={{
+                                duration: 0.3,
+                                repeat: Infinity,
+                                repeatType: 'loop',
                             }}
                         />
 
-                        {/* CSS-animated embers - no JS state updates */}
-                        <div className="ember-container">
-                            {[...Array(12)].map((_, i) => (
-                                <Ember
-                                    key={i}
-                                    style={{
-                                        left: `${15 + Math.random() * 70}%`,
-                                        top: `${30 + Math.random() * 40}%`,
-                                        animationDelay: `${i * 0.15}s`,
-                                    }}
-                                />
-                            ))}
-                        </div>
+                        {/* Paper curling effect via perspective transform */}
+                        <motion.div
+                            className="absolute inset-0 pointer-events-none"
+                            style={{
+                                transformStyle: 'preserve-3d',
+                                perspective: '1000px',
+                            }}
+                            animate={{
+                                rotateX: burnPhase > 0.3 ? burnPhase * 5 : 0,
+                                rotateY: burnPhase > 0.4 ? burnPhase * 3 : 0,
+                            }}
+                            transition={{ duration: 0.5 }}
+                        />
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -156,6 +179,34 @@ export default function BurnTimer({ isActive, onBurnComplete, onReplay }) {
                             background: 'radial-gradient(ellipse at center, #1a1410 0%, #0a0705 100%)'
                         }}
                     >
+                        {/* Remaining embers floating */}
+                        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                            {[...Array(8)].map((_, i) => (
+                                <motion.div
+                                    key={i}
+                                    className="absolute w-2 h-2 rounded-full"
+                                    style={{
+                                        left: `${20 + Math.random() * 60}%`,
+                                        top: `${60 + Math.random() * 30}%`,
+                                        background: 'radial-gradient(circle, #ffaa00 0%, #ff6600 100%)',
+                                        boxShadow: '0 0 6px #ff6600',
+                                    }}
+                                    animate={{
+                                        y: [-20, -100, -200],
+                                        x: [(Math.random() - 0.5) * 40, (Math.random() - 0.5) * 80],
+                                        opacity: [0.8, 0.6, 0],
+                                        scale: [1, 0.8, 0.3],
+                                    }}
+                                    transition={{
+                                        duration: 3,
+                                        delay: i * 0.4,
+                                        repeat: Infinity,
+                                        ease: 'easeOut',
+                                    }}
+                                />
+                            ))}
+                        </div>
+
                         <motion.div
                             className="text-center px-8"
                             initial={{ opacity: 0, y: 30 }}
