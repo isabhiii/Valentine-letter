@@ -109,36 +109,24 @@ export default function BurnTimer({ isActive, onBurnComplete, onReplay }) {
                 )}
             </AnimatePresence>
 
-            {/* REALISTIC BURN EFFECT */}
+            {/* REALISTIC BURN EFFECT - overlays the actual letter */}
             <AnimatePresence>
                 {isBurning && !showFinalMessage && (
                     <motion.div
-                        className="fixed inset-0 z-50"
+                        className="fixed inset-0 z-40 pointer-events-none"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.3 }}
                     >
-                        {/* Paper texture that burns */}
-                        <motion.div
-                            className="absolute inset-0"
-                            style={{
-                                background: 'linear-gradient(135deg, #fdf8f0 0%, #f5e6d3 50%, #e8d5c0 100%)',
-                            }}
-                            animate={{
-                                filter: `brightness(${1 + burnPhase * 0.5}) sepia(${burnPhase * 0.5}) contrast(${1 + burnPhase * 0.3})`,
-                            }}
-                            transition={{ duration: 0.1 }}
-                        />
-
-                        {/* Fire effects layer */}
+                        {/* Fire effects layer - overlays the letter */}
                         <FireEffect intensity={1} burnPhase={burnPhase} />
 
                         {/* Crackling light flicker overlay */}
                         <motion.div
                             className="absolute inset-0 pointer-events-none"
                             style={{
-                                background: 'radial-gradient(ellipse at 50% 50%, rgba(255,150,50,0.1) 0%, transparent 70%)',
+                                background: 'radial-gradient(ellipse at 50% 50%, rgba(255,150,50,0.15) 0%, transparent 70%)',
                             }}
                             animate={{
                                 opacity: burnPhase > 0 ? [0.3, 0.6, 0.4, 0.7, 0.3] : 0,
@@ -149,23 +137,10 @@ export default function BurnTimer({ isActive, onBurnComplete, onReplay }) {
                                 repeatType: 'loop',
                             }}
                         />
-
-                        {/* Paper curling effect via perspective transform */}
-                        <motion.div
-                            className="absolute inset-0 pointer-events-none"
-                            style={{
-                                transformStyle: 'preserve-3d',
-                                perspective: '1000px',
-                            }}
-                            animate={{
-                                rotateX: burnPhase > 0.3 ? burnPhase * 5 : 0,
-                                rotateY: burnPhase > 0.4 ? burnPhase * 3 : 0,
-                            }}
-                            transition={{ duration: 0.5 }}
-                        />
                     </motion.div>
                 )}
             </AnimatePresence>
+
 
             {/* Final message */}
             <AnimatePresence>
