@@ -11,7 +11,7 @@ import WaxSealReveal from '@/components/WaxSealReveal';
 import LetterContainer from '@/components/LetterContainer';
 import HandwrittenText from '@/components/HandwrittenText';
 import FloatingHearts from '@/components/FloatingHearts';
-import BurnTimer from '@/components/BurnTimer';
+import BurnTimer, { FireEffect } from '@/components/BurnTimer';
 import { LETTER_CONTENT } from '@/lib/constants';
 import { parseLetterFromUrl, hasSharedLetter } from '@/lib/shareUtils';
 import { burnVariants } from '@/lib/animations';
@@ -37,6 +37,7 @@ export default function Home({ initialLetterData = null }) {
   const [showHearts, setShowHearts] = useState(false);
   const [timerActive, setTimerActive] = useState(false);
   const [isBurning, setIsBurning] = useState(false);
+  const [burnPhase, setBurnPhase] = useState(0);
 
   // Check for shared letter on mount
   useEffect(() => {
@@ -117,6 +118,14 @@ export default function Home({ initialLetterData = null }) {
     setAppState(STATES.BURNING);
   }, []);
 
+  // Handle burn phase update
+  const handleBurnPhaseChange = useCallback((phase) => {
+    setBurnPhase(phase);
+    if (phase > 0 && !isBurning) {
+      setIsBurning(true);
+    }
+  }, [isBurning]);
+
   // Handle replay
   const handleReplay = useCallback(() => {
     // If recipient mode, just restart the recipient flow
@@ -135,6 +144,7 @@ export default function Home({ initialLetterData = null }) {
     setShowHearts(false);
     setTimerActive(false);
     setIsBurning(false);
+    setBurnPhase(0);
   }, [isRecipientMode]);
 
   // Loading state
@@ -248,10 +258,10 @@ export default function Home({ initialLetterData = null }) {
 
       {/* Letter reveal */}
       <AnimatePresence mode="wait">
-        {appState === STATES.REVEAL && !isBurning && (
+        {(appState === STATES.REVEAL || (isBurning && appState !== STATES.BURNING)) && (
           <motion.div
             key="letter"
-            className="w-full max-w-[600px]"
+            className="w-full max-w-[600px] relative"
             variants={burnVariants}
             initial="initial"
             animate={isBurning ? "burning" : "initial"}
@@ -262,6 +272,13 @@ export default function Home({ initialLetterData = null }) {
                 onComplete={handleTextComplete}
               />
             </LetterContainer>
+
+            {/* Fire effect INSIDE the letter bounds */}
+            {burnPhase > 0 && (
+              <div className="absolute inset-0 overflow-hidden rounded-lg pointer-events-none">
+                <FireEffect intensity={1} burnPhase={burnPhase} />
+              </div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
@@ -274,6 +291,7 @@ export default function Home({ initialLetterData = null }) {
         isActive={timerActive}
         onBurnComplete={handleBurnComplete}
         onReplay={handleReplay}
+        onBurnPhaseChange={handleBurnPhaseChange}
       />
     </main>
   );

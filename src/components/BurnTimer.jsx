@@ -6,7 +6,7 @@ import { TIMING } from '@/lib/constants';
 import { PREMIUM_EASE } from '@/lib/animations';
 import FireEffect from './FireEffect';
 
-export default function BurnTimer({ isActive, onBurnComplete, onReplay }) {
+export default function BurnTimer({ isActive, onBurnComplete, onReplay, onBurnPhaseChange }) {
     const [timeLeft, setTimeLeft] = useState(TIMING.BURN_COUNTDOWN);
     const [isBurning, setIsBurning] = useState(false);
     const [burnPhase, setBurnPhase] = useState(0); // 0 to 1 progression
@@ -41,6 +41,7 @@ export default function BurnTimer({ isActive, onBurnComplete, onReplay }) {
             const elapsed = Date.now() - startTime;
             const progress = Math.min(1, elapsed / duration);
             setBurnPhase(progress);
+            onBurnPhaseChange?.(progress); // Notify parent of phase change
 
             if (progress < 1) {
                 requestAnimationFrame(updatePhase);
@@ -54,12 +55,13 @@ export default function BurnTimer({ isActive, onBurnComplete, onReplay }) {
         };
 
         requestAnimationFrame(updatePhase);
-    }, [isBurning, showFinalMessage, onBurnComplete]);
+    }, [isBurning, showFinalMessage, onBurnComplete, onBurnPhaseChange]);
 
     const startBurn = useCallback(() => {
         setIsBurning(true);
         setBurnPhase(0);
-    }, []);
+        onBurnPhaseChange?.(0);
+    }, [onBurnPhaseChange]);
 
     const formatTime = (seconds) => {
         const mins = Math.floor(seconds / 60);
@@ -74,6 +76,7 @@ export default function BurnTimer({ isActive, onBurnComplete, onReplay }) {
         setIsBurning(false);
         setBurnPhase(0);
         setShowFinalMessage(false);
+        onBurnPhaseChange?.(0);
         onReplay?.();
     };
 
@@ -108,39 +111,6 @@ export default function BurnTimer({ isActive, onBurnComplete, onReplay }) {
                     </motion.div>
                 )}
             </AnimatePresence>
-
-            {/* REALISTIC BURN EFFECT - overlays the actual letter */}
-            <AnimatePresence>
-                {isBurning && !showFinalMessage && (
-                    <motion.div
-                        className="fixed inset-0 z-40 pointer-events-none"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.3 }}
-                    >
-                        {/* Fire effects layer - overlays the letter */}
-                        <FireEffect intensity={1} burnPhase={burnPhase} />
-
-                        {/* Crackling light flicker overlay */}
-                        <motion.div
-                            className="absolute inset-0 pointer-events-none"
-                            style={{
-                                background: 'radial-gradient(ellipse at 50% 50%, rgba(255,150,50,0.15) 0%, transparent 70%)',
-                            }}
-                            animate={{
-                                opacity: burnPhase > 0 ? [0.3, 0.6, 0.4, 0.7, 0.3] : 0,
-                            }}
-                            transition={{
-                                duration: 0.3,
-                                repeat: Infinity,
-                                repeatType: 'loop',
-                            }}
-                        />
-                    </motion.div>
-                )}
-            </AnimatePresence>
-
 
             {/* Final message */}
             <AnimatePresence>
@@ -239,3 +209,6 @@ export default function BurnTimer({ isActive, onBurnComplete, onReplay }) {
         </>
     );
 }
+
+// Export FireEffect for use in parent component
+export { FireEffect };
