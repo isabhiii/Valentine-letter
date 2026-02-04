@@ -4,7 +4,11 @@ import { generateShareUrl, generateShortLink } from '@/lib/shareUtils';
 import { SPRING_GENTLE, PREMIUM_EASE, EASE_OUT_EXPO } from '@/lib/animations';
 
 export default function ShareScreen({ letterData, senderName, onBack, onPreview }) {
+    const [shareUrl, setShareUrl] = useState('');
+    const [copied, setCopied] = useState(false);
+    const [isGenerating, setIsGenerating] = useState(false);
     const [shortenStatus, setShortenStatus] = useState('pending'); // pending, success, failed
+    const inputRef = useRef(null);
 
     // Generate URL on mount
     useEffect(() => {
@@ -13,6 +17,7 @@ export default function ShareScreen({ letterData, senderName, onBack, onPreview 
 
     // Generate the share URL
     const handleGenerate = async () => {
+        if (isGenerating) return; // Prevent double trigger
         setIsGenerating(true);
         setShortenStatus('pending');
         console.log('Starting link generation sequence...');
