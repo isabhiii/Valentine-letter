@@ -26,7 +26,7 @@ export const LETTER_CONTENT = {
 // Timing configuration
 export const TIMING = {
     SCRATCH_THRESHOLD: 0.7,     // 70% scratched to trigger reveal
-    BURN_COUNTDOWN: 10,         // Seconds before burn effect (TESTING - change back to 60)
+    BURN_COUNTDOWN: 60,         // Seconds before burn effect
     WORD_STAGGER_MS: 80,        // Milliseconds between word reveals
     HEART_COUNT: 18,            // Number of floating hearts
     LINE_STAGGER_MS: 150        // Milliseconds between line reveals
