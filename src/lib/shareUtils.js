@@ -83,18 +83,24 @@ export async function generateShortLink(letterData) {
         const encoded = encodeLetterData(letterData);
         if (!encoded) return null;
 
+        console.log('Sending short-link request...');
         const response = await fetch('/api/letter', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ data: encoded }),
         });
 
-        if (!response.ok) throw new Error('Failed to shorten link');
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error(`Shorten API Error (${response.status}):`, errorText);
+            throw new Error(`Failed to shorten link: ${response.status}`);
+        }
 
         const { id } = await response.json();
+        console.log('Short Link ID generated:', id);
         return id;
     } catch (error) {
-        console.error('Shorten error:', error);
+        console.error('generateShortLink critical failure:', error);
         return null;
     }
 }

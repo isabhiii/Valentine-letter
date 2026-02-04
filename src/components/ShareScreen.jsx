@@ -4,10 +4,7 @@ import { generateShareUrl, generateShortLink } from '@/lib/shareUtils';
 import { SPRING_GENTLE, PREMIUM_EASE, EASE_OUT_EXPO } from '@/lib/animations';
 
 export default function ShareScreen({ letterData, senderName, onBack, onPreview }) {
-    const [shareUrl, setShareUrl] = useState('');
-    const [copied, setCopied] = useState(false);
-    const [isGenerating, setIsGenerating] = useState(false);
-    const inputRef = useRef(null);
+    const [shortenStatus, setShortenStatus] = useState('pending'); // pending, success, failed
 
     // Generate URL on mount
     useEffect(() => {
@@ -17,22 +14,28 @@ export default function ShareScreen({ letterData, senderName, onBack, onPreview 
     // Generate the share URL
     const handleGenerate = async () => {
         setIsGenerating(true);
+        setShortenStatus('pending');
+        console.log('Starting link generation sequence...');
+
         try {
             // First attempt to generate a premium short link
             const id = await generateShortLink(letterData);
             if (id) {
+                console.log('Short link SUCCESS');
                 const shortUrl = `${window.location.origin}/l/${id}`;
                 setShareUrl(shortUrl);
+                setShortenStatus('success');
             } else {
-                // Fallback to the long URL if shortening fails
+                console.warn('Short link FAILED - falling back to long URL');
                 const longUrl = generateShareUrl(letterData, senderName);
                 if (longUrl) setShareUrl(longUrl);
+                setShortenStatus('failed');
             }
         } catch (error) {
-            console.error('Failed to generate link:', error);
-            // Extreme fallback
+            console.error('HandleGenerate exception:', error);
             const longUrl = generateShareUrl(letterData, senderName);
             if (longUrl) setShareUrl(longUrl);
+            setShortenStatus('failed');
         } finally {
             setIsGenerating(false);
         }
