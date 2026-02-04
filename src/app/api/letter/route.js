@@ -4,8 +4,8 @@ import path from 'path';
 import { nanoid } from 'nanoid';
 import { kv } from '@vercel/kv';
 
-// Check for KV_REST_API_URL to determine if we should use Vercel KV or local mock
-const USE_KV = !!process.env.KV_REST_API_URL;
+// Check for KV_REST_API_URL or REDIS_URL to determine if we should use Vercel KV or local mock
+const USE_KV = !!(process.env.KV_REST_API_URL || process.env.REDIS_URL);
 const STORAGE_DIR = path.join(process.cwd(), 'data', 'letters');
 
 export async function POST(request) {
@@ -16,6 +16,9 @@ export async function POST(request) {
         }
 
         const id = nanoid(6);
+
+        console.log('API Request - USE_KV:', USE_KV);
+        console.log('Available Env Keys:', Object.keys(process.env).filter(key => key.includes('KV') || key.includes('REDIS')));
 
         if (USE_KV) {
             // Production: Save to Vercel KV (Redis)

@@ -164,6 +164,20 @@ export default function ShareScreen({ letterData, senderName, onBack, onPreview 
                         </motion.button>
                     ) : (
                         <div className="space-y-3">
+                            <div className="flex items-center justify-between mb-1 px-1">
+                                <span className="text-[10px] font-sans uppercase tracking-widest text-[var(--ink-deep)] opacity-40">
+                                    Link Type
+                                </span>
+                                {shortenStatus === 'success' ? (
+                                    <span className="flex items-center gap-1 text-[10px] font-sans font-bold uppercase tracking-widest text-green-600 bg-green-50 px-2 py-0.5 rounded-full border border-green-100">
+                                        ✨ Premium Mini-Link
+                                    </span>
+                                ) : (
+                                    <span className="flex items-center gap-1 text-[10px] font-sans font-bold uppercase tracking-widest text-[#b01830] opacity-60">
+                                        Fallback Long-Link
+                                    </span>
+                                )}
+                            </div>
                             <div className="relative">
                                 <input
                                     ref={inputRef}
