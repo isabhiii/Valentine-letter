@@ -117,18 +117,18 @@ export default function RecipientIntro({ senderName, onOpen }) {
 
                 {/* Sender name with special styling */}
                 <motion.div
-                    className="mb-4"
+                    className="mb-8"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.8, duration: 0.8, ease: EASE_OUT_EXPO }}
                 >
-                    <p className="font-handwritten text-xl sm:text-2xl text-[var(--heart-red)] mb-2">
+                    <h2 className="font-handwritten text-5xl sm:text-7xl text-[var(--heart-red)] mb-4 drop-shadow-sm">
                         {senderName || 'Someone special'}
-                    </p>
-                    <p className="font-serif text-2xl sm:text-3xl text-[var(--ink-deep)]">
+                    </h2>
+                    <p className="font-serif text-2xl sm:text-3xl text-[var(--ink-deep)] leading-tight">
                         has written you
                     </p>
-                    <p className="font-serif text-2xl sm:text-3xl text-[var(--ink-deep)]">
+                    <p className="font-serif text-2xl sm:text-3xl text-[var(--ink-deep)] leading-tight">
                         a love letter
                     </p>
                 </motion.div>

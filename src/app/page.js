@@ -29,18 +29,20 @@ const STATES = {
   BURNING: 'burning'
 };
 
-export default function Home() {
+export default function Home({ initialLetterData = null }) {
   const [appState, setAppState] = useState(STATES.LOADING);
-  const [customLetter, setCustomLetter] = useState(null);
-  const [senderName, setSenderName] = useState('');
-  const [isRecipientMode, setIsRecipientMode] = useState(false);
+  const [customLetter, setCustomLetter] = useState(initialLetterData);
+  const [senderName, setSenderName] = useState(initialLetterData?.senderName || '');
+  const [isRecipientMode, setIsRecipientMode] = useState(!!initialLetterData);
   const [showHearts, setShowHearts] = useState(false);
   const [timerActive, setTimerActive] = useState(false);
   const [isBurning, setIsBurning] = useState(false);
 
   // Check for shared letter on mount
   useEffect(() => {
-    if (hasSharedLetter()) {
+    if (initialLetterData) {
+      setAppState(STATES.RECIPIENT_INTRO);
+    } else if (hasSharedLetter()) {
       const parsed = parseLetterFromUrl();
       if (parsed) {
         setCustomLetter(parsed.letter);
@@ -53,7 +55,7 @@ export default function Home() {
     } else {
       setAppState(STATES.WELCOME);
     }
-  }, []);
+  }, [initialLetterData]);
 
   // Get current letter content
   const currentLetter = customLetter || LETTER_CONTENT;

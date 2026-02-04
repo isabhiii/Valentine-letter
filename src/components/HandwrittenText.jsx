@@ -105,14 +105,14 @@ export default function HandwrittenText({ letterContent, onComplete }) {
 
             {/* Signature with sticker */}
             <motion.div
-                className="mt-10 text-right"
+                className="mt-16 text-right"
                 variants={signatureVariants}
             >
-                <p className="signature-text mb-2">
+                <p className="signature-text mb-4 text-3xl sm:text-4xl">
                     {content.signature},
                 </p>
-                <div className="flex items-center justify-end gap-3">
-                    <span className="font-handwritten text-2xl text-[var(--ink-deep)]">
+                <div className="flex items-center justify-end gap-4">
+                    <span className="font-handwritten text-4xl sm:text-6xl text-[var(--heart-red)] drop-shadow-sm">
                         {content.senderName}
                     </span>
                     {StickerComponent && (
@@ -129,7 +129,7 @@ export default function HandwrittenText({ letterContent, onComplete }) {
                                 delay: 2
                             }}
                         >
-                            <StickerComponent size={36} color="currentColor" />
+                            <StickerComponent size={60} color="currentColor" />
                         </motion.div>
                     )}
                 </div>

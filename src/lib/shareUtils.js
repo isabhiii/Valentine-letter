@@ -1,3 +1,5 @@
+import LZString from 'lz-string';
+
 // Utility functions for encoding/decoding letter data in URLs
 
 /**
@@ -33,14 +35,15 @@ function decompressLetter(min) {
 }
 
 /**
- * Encode letter data to a URL-safe string
+ * Encode letter data to a URL-safe highly compressed string
  */
 export function encodeLetterData(letterData) {
     try {
         const compressed = compressLetter(letterData);
         const json = JSON.stringify(compressed);
-        const encoded = btoa(unescape(encodeURIComponent(json)));
-        return encoded.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+
+        // Use LZString for much better compression ratio than Base64 alone
+        return LZString.compressToEncodedURIComponent(json);
     } catch (error) {
         console.error('Failed to encode letter:', error);
         return null;
@@ -48,15 +51,22 @@ export function encodeLetterData(letterData) {
 }
 
 /**
- * Decode letter data from a URL-safe string
+ * Decode letter data from a shared string
  */
 export function decodeLetterData(encoded) {
     try {
-        let base64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
-        while (base64.length % 4) {
-            base64 += '=';
+        // Try LZ decompression first (new format)
+        let json = LZString.decompressFromEncodedURIComponent(encoded);
+
+        // Fallback for older Base64-only links
+        if (!json) {
+            let base64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
+            while (base64.length % 4) {
+                base64 += '=';
+            }
+            json = decodeURIComponent(escape(atob(base64)));
         }
-        const json = decodeURIComponent(escape(atob(base64)));
+
         const compressed = JSON.parse(json);
         return decompressLetter(compressed);
     } catch (error) {
@@ -64,6 +74,31 @@ export function decodeLetterData(encoded) {
         return null;
     }
 }
+
+/**
+ * Generate a short link for the letter data
+ */
+export async function generateShortLink(letterData) {
+    try {
+        const encoded = encodeLetterData(letterData);
+        if (!encoded) return null;
+
+        const response = await fetch('/api/letter', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ data: encoded }),
+        });
+
+        if (!response.ok) throw new Error('Failed to shorten link');
+
+        const { id } = await response.json();
+        return id;
+    } catch (error) {
+        console.error('Shorten error:', error);
+        return null;
+    }
+}
+
 
 /**
  * Generate a shareable URL for a letter

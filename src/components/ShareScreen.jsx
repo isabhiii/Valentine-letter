@@ -1,8 +1,6 @@
-'use client';
-
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { generateShareUrl } from '@/lib/shareUtils';
+import { generateShareUrl, generateShortLink } from '@/lib/shareUtils';
 import { SPRING_GENTLE, PREMIUM_EASE, EASE_OUT_EXPO } from '@/lib/animations';
 
 export default function ShareScreen({ letterData, senderName, onBack, onPreview }) {
@@ -12,23 +10,32 @@ export default function ShareScreen({ letterData, senderName, onBack, onPreview 
     const inputRef = useRef(null);
 
     // Generate URL on mount
-    useState(() => {
-        const url = generateShareUrl(letterData, senderName);
-        if (url) {
-            setShareUrl(url);
-        }
+    useEffect(() => {
+        handleGenerate();
     }, [letterData, senderName]);
 
     // Generate the share URL
-    const handleGenerate = () => {
+    const handleGenerate = async () => {
         setIsGenerating(true);
-        setTimeout(() => {
-            const url = generateShareUrl(letterData, senderName);
-            if (url) {
-                setShareUrl(url);
+        try {
+            // First attempt to generate a premium short link
+            const id = await generateShortLink(letterData);
+            if (id) {
+                const shortUrl = `${window.location.origin}/l/${id}`;
+                setShareUrl(shortUrl);
+            } else {
+                // Fallback to the long URL if shortening fails
+                const longUrl = generateShareUrl(letterData, senderName);
+                if (longUrl) setShareUrl(longUrl);
             }
+        } catch (error) {
+            console.error('Failed to generate link:', error);
+            // Extreme fallback
+            const longUrl = generateShareUrl(letterData, senderName);
+            if (longUrl) setShareUrl(longUrl);
+        } finally {
             setIsGenerating(false);
-        }, 800); // Small delay for effect
+        }
     };
 
     // Copy to clipboard
