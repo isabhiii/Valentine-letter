@@ -21,6 +21,15 @@ export async function POST(request) {
             // Production: Save to Vercel KV (Redis)
             await kv.set(`letter:${id}`, data, { ex: 60 * 60 * 24 * 7 }); // 7-day expiry
         } else {
+            // Check if we are on Vercel but without KV
+            if (process.env.VERCEL) {
+                console.error('CRITICAL: Vercel environment detected but KV_REST_API_URL is missing.');
+                return NextResponse.json({
+                    error: 'Vercel KV not connected. Please connect a KV store in the Vercel dashboard.',
+                    isVercel: true
+                }, { status: 503 });
+            }
+
             // Local Development: Save to filesystem mock
             await fs.mkdir(STORAGE_DIR, { recursive: true });
             const filePath = path.join(STORAGE_DIR, `${id}.json`);
