@@ -38,14 +38,14 @@ function BackgroundDoodle({ type, size, style }) {
 export default function RecipientIntro({ senderName, onOpen }) {
     return (
         <motion.div
-            className="fixed inset-0 z-40 flex flex-col w-full h-full px-6 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] overflow-y-auto overflow-x-hidden"
+            className="fixed inset-0 z-40 flex flex-col items-center w-full h-full px-6 overflow-y-auto overflow-x-hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.8 }}
         >
             {/* Top Spacer */}
-            <div className="flex-grow min-h-[2rem]" />
+            <div className="flex-grow min-h-[4rem]" />
 
             {/* Animated background doodles */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -81,7 +81,7 @@ export default function RecipientIntro({ senderName, onOpen }) {
             </div>
 
             <motion.div
-                className="text-center max-w-md relative z-10"
+                className="text-center max-w-md w-full mx-auto relative z-10"
                 initial={{ y: 40, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.3, ...SPRING_GENTLE }}
@@ -184,7 +184,7 @@ export default function RecipientIntro({ senderName, onOpen }) {
             </motion.div>
 
             {/* Bottom Spacer */}
-            <div className="flex-grow min-h-[2rem]" />
+            <div className="flex-grow min-h-[4rem]" />
 
             {/* Bottom decorative doodle hearts */}
             <motion.div

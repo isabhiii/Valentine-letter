@@ -255,50 +255,54 @@ export default function Home({ initialLetterData = null }) {
         {appState === STATES.SEAL && !isBurning && (
           <motion.div
             key="seal"
-            className="fixed inset-0 z-40 flex flex-col w-full h-full px-6 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] overflow-y-auto overflow-x-hidden"
+            className="fixed inset-0 z-40 flex flex-col items-center w-full h-full px-6 overflow-y-auto overflow-x-hidden"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.98 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="flex-grow min-h-[2rem]" />
-            <LetterContainer>
-              <WaxSealReveal onRevealComplete={handleSealReveal} />
-            </LetterContainer>
-            <div className="flex-grow min-h-[2rem]" />
+            <div className="flex-grow min-h-[4rem]" />
+            <div className="w-full max-w-[600px] mx-auto">
+              <LetterContainer>
+                <WaxSealReveal onRevealComplete={handleSealReveal} />
+              </LetterContainer>
+            </div>
+            <div className="flex-grow min-h-[4rem]" />
           </motion.div>
         )}
 
         {(appState === STATES.REVEAL || (isBurning && appState !== STATES.BURNING)) && (
           <motion.div
             key="reveal"
-            className="fixed inset-0 z-40 flex flex-col w-full h-full px-6 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] overflow-y-auto overflow-x-hidden"
+            className="fixed inset-0 z-40 flex flex-col items-center w-full h-full px-6 overflow-y-auto overflow-x-hidden"
             variants={burnVariants}
             initial="initial"
             animate={isBurning ? "burning" : "initial"}
             exit={{ opacity: 0, scale: 0.95 }}
           >
-            <div className="flex-grow min-h-[2rem]" />
-            <LetterContainer className="relative">
-              <HandwrittenText
-                letterContent={currentLetter}
-                onComplete={handleTextComplete}
-              />
-              {!isBurning && (
-                <LetterFooter
-                  shareUrl={!isRecipientMode ? shareUrl : ''}
-                  isRecipientMode={isRecipientMode}
-                  onBurn={handleManualBurn}
+            <div className="flex-grow min-h-[4rem]" />
+            <div className="w-full max-w-[600px] mx-auto relative group">
+              <LetterContainer className="relative">
+                <HandwrittenText
+                  letterContent={currentLetter}
+                  onComplete={handleTextComplete}
                 />
-              )}
+                {!isBurning && (
+                  <LetterFooter
+                    shareUrl={!isRecipientMode ? shareUrl : ''}
+                    isRecipientMode={isRecipientMode}
+                    onBurn={handleManualBurn}
+                  />
+                )}
 
-              {burnPhase > 0 && (
-                <div className="absolute inset-0 overflow-hidden rounded-lg pointer-events-none z-50">
-                  <FireEffect intensity={1} burnPhase={burnPhase} />
-                </div>
-              )}
-            </LetterContainer>
-            <div className="flex-grow min-h-[2rem]" />
+                {burnPhase > 0 && (
+                  <div className="absolute inset-0 overflow-hidden rounded-lg pointer-events-none z-50">
+                    <FireEffect intensity={1} burnPhase={burnPhase} />
+                  </div>
+                )}
+              </LetterContainer>
+            </div>
+            <div className="flex-grow min-h-[4rem]" />
           </motion.div>
         )}
       </AnimatePresence>
