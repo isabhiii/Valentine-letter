@@ -38,12 +38,15 @@ function BackgroundDoodle({ type, size, style }) {
 export default function RecipientIntro({ senderName, onOpen }) {
     return (
         <motion.div
-            className="fixed inset-0 z-40 flex items-center justify-center p-6 overflow-hidden"
+            className="fixed inset-0 z-40 flex flex-col px-6 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] overflow-y-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.8 }}
         >
+            {/* Top Spacer */}
+            <div className="flex-grow min-h-[2rem]" />
+
             {/* Animated background doodles */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 {DOODLE_ELEMENTS.map((doodle, i) => (

@@ -90,7 +90,7 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
 
     return (
         <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 pt-[calc(1.5rem+env(safe-area-inset-top))] pb-[calc(1.5rem+env(safe-area-inset-bottom))] overflow-y-auto"
+            className="fixed inset-0 z-50 flex flex-col p-4 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] overflow-y-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -98,8 +98,11 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
                 background: 'linear-gradient(135deg, rgba(253,250,243,0.98) 0%, rgba(248,232,232,0.98) 100%)'
             }}
         >
+            {/* Top Spacer for centering */}
+            <div className="flex-grow min-h-[2rem]" />
+
             <motion.div
-                className="w-full max-w-[600px] paper-texture letter-shadow rounded-xl p-6 sm:p-10 my-8"
+                className="w-full max-w-[600px] paper-texture letter-shadow rounded-xl p-6 sm:p-10 mx-auto transition-all"
                 initial={{ scale: 0.9, y: 30 }}
                 animate={{ scale: 1, y: 0 }}
                 transition={SPRING_GENTLE}
@@ -360,6 +363,9 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
                     </div>
                 </motion.div>
             </motion.div>
+
+            {/* Bottom Spacer for centering */}
+            <div className="flex-grow min-h-[2rem]" />
         </motion.div>
     );
 }

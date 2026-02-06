@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PREMIUM_EASE } from '@/lib/animations';
 
-export default function LetterFooter({ shareUrl, timeLeft }) {
+export default function LetterFooter({ shareUrl, isRecipientMode, onBurn }) {
     const [copied, setCopied] = useState(false);
 
     const handleCopy = async () => {
@@ -17,29 +17,37 @@ export default function LetterFooter({ shareUrl, timeLeft }) {
         }
     };
 
-    const formatTime = (seconds) => {
-        const mins = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        return `${mins}:${secs.toString().padStart(2, '0')}`;
-    };
-
-    const isVisible = timeLeft !== null;
-
     return (
-        <AnimatePresence>
-            {isVisible && (
-                <motion.div
-                    className="mt-12 flex flex-col items-center gap-4 border-t border-[var(--ink-deep)]/10 pt-8"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5, duration: 0.8, ease: PREMIUM_EASE }}
-                >
-                    {/* Timer Text */}
-                    <div className="font-handwritten text-xl text-[var(--ink-deep)] opacity-60">
-                        This letter will vanish in <span className="font-bold">{formatTime(timeLeft)}</span>
-                    </div>
-
-                    {/* Simple Copy Button - less distracting */}
+        <motion.div
+            className="mt-12 flex flex-col items-center gap-6 border-t border-[var(--ink-deep)]/10 pt-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.8, ease: PREMIUM_EASE }}
+        >
+            {isRecipientMode ? (
+                <div className="flex flex-col items-center gap-4 w-full">
+                    <p className="font-handwritten text-xl text-[var(--ink-deep)] opacity-60 text-center max-w-[280px]">
+                        This unique message exists only for you. When you are ready...
+                    </p>
+                    <motion.button
+                        onClick={onBurn}
+                        className="flex items-center gap-3 px-8 py-3 rounded-full bg-[var(--heart-red)] text-white shadow-lg shadow-red-500/20"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        animate={{
+                            boxShadow: ["0 4px 12px rgba(196, 30, 58, 0.2)", "0 4px 20px rgba(196, 30, 58, 0.4)", "0 4px 12px rgba(196, 30, 58, 0.2)"]
+                        }}
+                        transition={{
+                            boxShadow: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+                        }}
+                    >
+                        <span className="text-xl">🔥</span>
+                        <span className="font-handwritten text-xl font-bold">Burn After Reading</span>
+                    </motion.button>
+                </div>
+            ) : (
+                <>
+                    {/* Simple Copy Button for Sender - less distracting */}
                     {shareUrl && (
                         <motion.button
                             onClick={handleCopy}
@@ -57,8 +65,8 @@ export default function LetterFooter({ shareUrl, timeLeft }) {
                             </span>
                         </motion.button>
                     )}
-                </motion.div>
+                </>
             )}
-        </AnimatePresence>
+        </motion.div>
     );
 }

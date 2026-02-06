@@ -6,14 +6,17 @@ import { SPRING_GENTLE, PREMIUM_EASE } from '@/lib/animations';
 export default function WelcomeScreen({ onWriteOwn, onUseDefault }) {
     return (
         <motion.div
-            className="fixed inset-0 z-40 flex items-center justify-center px-6 pt-[calc(1.5rem+env(safe-area-inset-top))] pb-[calc(1.5rem+env(safe-area-inset-bottom))] overflow-y-auto"
+            className="fixed inset-0 z-40 flex flex-col px-6 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] overflow-y-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
         >
+            {/* Top Spacer */}
+            <div className="flex-grow min-h-[2rem]" />
+
             <motion.div
-                className="text-center w-full max-w-lg my-auto"
+                className="text-center w-full max-w-lg mx-auto"
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2, ...SPRING_GENTLE }}
@@ -95,6 +98,9 @@ export default function WelcomeScreen({ onWriteOwn, onUseDefault }) {
                     Your letter will self-destruct after 60 seconds 🔥
                 </motion.p>
             </motion.div>
+
+            {/* Bottom Spacer */}
+            <div className="flex-grow min-h-[2rem]" />
         </motion.div>
     );
 }

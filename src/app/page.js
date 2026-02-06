@@ -122,18 +122,21 @@ export default function Home({ initialLetterData = null }) {
     setShortenStatus(status);
   }, []);
 
-  // Handle timer ticks
-  const handleTick = useCallback((time) => {
-    setTimeLeft(time);
+  const [manualBurnActive, setManualBurnActive] = useState(false);
+
+  // Handle manual burn trigger
+  const handleManualBurn = useCallback(() => {
+    setManualBurnActive(true);
+    setTimerActive(true);
   }, []);
 
   // Handle burn complete
   const handleBurnComplete = useCallback(() => {
     setIsBurning(true);
-    setAppState(STATES.BURNING);
+    setManualBurnActive(false);
   }, []);
 
-  // Handle burn phase update
+  // Handle phase progression for fire effect
   const handleBurnPhaseChange = useCallback((phase) => {
     setBurnPhase(phase);
     if (phase > 0 && !isBurning) {
@@ -160,7 +163,7 @@ export default function Home({ initialLetterData = null }) {
     setTimerActive(false);
     setIsBurning(false);
     setBurnPhase(0);
-    setTimeLeft(null);
+    setManualBurnActive(false);
     // Note: We intentionally don't clear shareUrl/shortenStatus here 
     // because they are specific to the generated letter.
   }, [isRecipientMode]);
@@ -296,7 +299,8 @@ export default function Home({ initialLetterData = null }) {
               {!isBurning && (
                 <LetterFooter
                   shareUrl={!isRecipientMode ? shareUrl : ''}
-                  timeLeft={timeLeft}
+                  isRecipientMode={isRecipientMode}
+                  onBurn={handleManualBurn}
                 />
               )}
             </LetterContainer>
@@ -314,14 +318,12 @@ export default function Home({ initialLetterData = null }) {
       {/* Floating hearts */}
       <FloatingHearts isActive={showHearts && !isBurning} />
 
-      {/* Burn timer */}
+      {/* Burn animation controller */}
       <BurnTimer
-        isActive={timerActive}
+        isActive={manualBurnActive}
         onBurnComplete={handleBurnComplete}
         onReplay={handleReplay}
         onBurnPhaseChange={handleBurnPhaseChange}
-        onTick={handleTick}
-        showTimer={false}
       />
     </main>
   );

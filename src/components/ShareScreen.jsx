@@ -101,7 +101,7 @@ export default function ShareScreen({
 
     return (
         <motion.div
-            className="fixed inset-0 z-40 flex items-center justify-center px-6 pt-[calc(1.5rem+env(safe-area-inset-top))] pb-[calc(1.5rem+env(safe-area-inset-bottom))] overflow-y-auto"
+            className="fixed inset-0 z-40 flex flex-col px-6 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] overflow-y-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -109,8 +109,11 @@ export default function ShareScreen({
                 background: 'linear-gradient(135deg, rgba(253,250,243,0.98) 0%, rgba(248,232,232,0.98) 100%)'
             }}
         >
+            {/* Top Spacer */}
+            <div className="flex-grow min-h-[2rem]" />
+
             <motion.div
-                className="w-full max-w-md paper-texture letter-shadow rounded-2xl p-8 sm:p-10 my-auto"
+                className="w-full max-w-md paper-texture letter-shadow rounded-2xl p-8 sm:p-10 mx-auto"
                 initial={{ scale: 0.9, y: 30 }}
                 animate={{ scale: 1, y: 0 }}
                 transition={SPRING_GENTLE}
@@ -276,6 +279,9 @@ export default function ShareScreen({
                     💡 The letter will self-destruct 60 seconds after reading
                 </motion.p>
             </motion.div>
+
+            {/* Bottom Spacer */}
+            <div className="flex-grow min-h-[2rem]" />
         </motion.div>
     );
 }

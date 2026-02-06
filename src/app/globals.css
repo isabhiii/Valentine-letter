@@ -41,7 +41,9 @@ body {
   margin: 0;
   padding: 0;
   font-family: var(--serif) !important;
-  background: var(--romantic-gradient);
+  background: var(--paper-white);
+  /* Use a fixed attachment for the gradient to prevent white gaps during Safari stretchy scroll */
+  background: var(--romantic-gradient) fixed;
   min-height: 100vh;
   min-height: 100dvh;
   overflow-x: hidden;

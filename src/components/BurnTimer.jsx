@@ -10,38 +10,14 @@ export default function BurnTimer({
     isActive,
     onBurnComplete,
     onReplay,
-    onBurnPhaseChange,
-    onTick,
-    showTimer = true
+    onBurnPhaseChange
 }) {
-    const [timeLeft, setTimeLeft] = useState(TIMING.BURN_COUNTDOWN);
-    const [isBurning, setIsBurning] = useState(false);
     const [burnPhase, setBurnPhase] = useState(0); // 0 to 1 progression
     const [showFinalMessage, setShowFinalMessage] = useState(false);
 
-    // Countdown timer
-    useEffect(() => {
-        if (!isActive || isBurning) return;
-
-        const timer = setInterval(() => {
-            setTimeLeft(prev => {
-                const next = prev <= 1 ? 0 : prev - 1;
-                onTick?.(next); // Notify parent of time remaining
-
-                if (next === 0) {
-                    clearInterval(timer);
-                    startBurn();
-                }
-                return next;
-            });
-        }, 1000);
-
-        return () => clearInterval(timer);
-    }, [isActive, isBurning, onTick]);
-
     // Burn phase progression (0 to 1 over 4 seconds)
     useEffect(() => {
-        if (!isBurning || showFinalMessage) return;
+        if (!isActive || showFinalMessage) return;
 
         const duration = 4000; // 4 second burn
         const startTime = Date.now();
@@ -64,32 +40,16 @@ export default function BurnTimer({
         };
 
         requestAnimationFrame(updatePhase);
-    }, [isBurning, showFinalMessage, onBurnComplete, onBurnPhaseChange]);
-
-    const startBurn = useCallback(() => {
-        setIsBurning(true);
-        setBurnPhase(0);
-        onBurnPhaseChange?.(0);
-    }, [onBurnPhaseChange]);
-
-    const formatTime = (seconds) => {
-        const mins = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        return `${mins}:${secs.toString().padStart(2, '0')}`;
-    };
-
-    const isWarning = timeLeft <= 10;
+    }, [isActive, showFinalMessage, onBurnComplete, onBurnPhaseChange]);
 
     const handleReplay = () => {
-        setTimeLeft(TIMING.BURN_COUNTDOWN);
-        setIsBurning(false);
         setBurnPhase(0);
         setShowFinalMessage(false);
         onBurnPhaseChange?.(0);
         onReplay?.();
     };
 
-    if (!isActive) return null;
+    if (!isActive && !showFinalMessage) return null;
 
     return (
         <>
