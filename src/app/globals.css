@@ -329,3 +329,23 @@ body {
   position: absolute;
   background: rgba(0, 0, 0, 0.6);
 }
+
+/* Ruled paper background pattern */
+.paper-lines {
+  background-image: linear-gradient(var(--rose-blush) 1px, transparent 1px);
+  background-size: 100% 1.5rem;
+  background-position: 0 1.2rem;
+  line-height: 1.5rem !important;
+}
+
+/* Zen focus transition utilities */
+.zen-focus-content {
+  transition: opacity 0.8s var(--ease-premium), filter 0.8s var(--ease-premium), transform 0.8s var(--ease-premium);
+}
+
+.zen-blurred {
+  opacity: 0.15;
+  filter: blur(2px);
+  pointer-events: none;
+  transform: scale(0.98);
+}

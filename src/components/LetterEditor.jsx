@@ -16,10 +16,26 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
     const [senderName, setSenderName] = useState(initialData?.senderName || '');
     const [selectedSticker, setSelectedSticker] = useState(initialData?.sticker || 'heart');
     const [showStickerPicker, setShowStickerPicker] = useState(false);
+    const [isFocused, setIsFocused] = useState(false);
     const [photos, setPhotos] = useState(
         initialData?.photos?.map(url => ({ id: Math.random(), dataUrl: url })) || []
     ); // Array of { id, dataUrl }
     const fileInputRef = useRef(null);
+    const textareaRef = useRef(null);
+
+    // Auto-expand textarea
+    const adjustHeight = () => {
+        const textarea = textareaRef.current;
+        if (textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = `${textarea.scrollHeight}px`;
+        }
+    };
+
+    const handleTextChange = (e) => {
+        setLetterText(e.target.value);
+        adjustHeight();
+    };
 
     const handleSave = () => {
         const lines = letterText.split('\n').filter(line => line.trim() !== '' || letterText.split('\n').indexOf(line) > 0);
@@ -95,16 +111,16 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
             }}
         >
             {/* Top Spacer for centering */}
-            <div className="flex-grow min-h-[2rem]" />
+            <div className={`flex-grow min-h-[1rem] zen-focus-content ${isFocused ? 'h-0 min-h-0 opacity-0' : ''}`} />
 
             <motion.div
-                className="w-full max-w-[600px] paper-texture letter-shadow rounded-xl p-6 sm:p-10 mx-auto transition-all relative z-10"
+                className={`w-full max-w-[600px] paper-texture letter-shadow rounded-xl p-6 sm:p-10 mx-auto transition-all duration-700 relative z-10 ${isFocused ? 'scale-[1.02] shadow-2xl' : ''}`}
                 initial={{ scale: 0.95, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
                 transition={SPRING_GENTLE}
             >
                 {/* Header */}
-                <div className="text-center mb-8">
+                <div className={`text-center mb-8 zen-focus-content ${isFocused ? 'zen-blurred h-0 overflow-hidden mb-0' : ''}`}>
                     <motion.h1
                         className="font-serif text-2xl sm:text-3xl text-[var(--ink-deep)] mb-2"
                         initial={{ opacity: 0, y: -10 }}
@@ -126,7 +142,7 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
                 {/* Form */}
                 <div className="space-y-6">
                     {/* Recipient */}
-                    <div>
+                    <div className={`zen-focus-content ${isFocused ? 'zen-blurred' : ''}`}>
                         <label className="block font-handwritten text-lg text-[var(--ink-deep)] mb-2">
                             To whom?
                         </label>
@@ -143,24 +159,40 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
                     </div>
 
                     {/* Letter body */}
-                    <div>
-                        <label className="block font-handwritten text-lg text-[var(--ink-deep)] mb-2">
+                    <div className="relative group">
+                        <label className={`block font-handwritten text-lg text-[var(--ink-deep)] mb-2 zen-focus-content ${isFocused ? 'opacity-30 transform translate-y-[-10px] scale-90' : ''}`}>
                             Your message
                         </label>
                         <textarea
+                            ref={textareaRef}
                             value={letterText}
-                            onChange={(e) => setLetterText(e.target.value)}
+                            onChange={handleTextChange}
+                            onFocus={() => {
+                                setIsFocused(true);
+                                setTimeout(adjustHeight, 0);
+                            }}
+                            onBlur={() => setIsFocused(false)}
                             placeholder="Write from the heart..."
-                            rows={6}
-                            className="w-full px-4 py-3 rounded-lg bg-white/50 border border-[var(--rose-blush)]/30 
-                            font-handwritten text-lg text-[var(--ink-deep)] placeholder:text-[var(--ink-deep)]/30
-                            focus:outline-none focus:border-[var(--heart-red)]/50 focus:ring-2 focus:ring-[var(--heart-red)]/20
-                            transition-all resize-none leading-relaxed"
+                            className={`w-full px-4 py-3 rounded-lg bg-white/30 border border-[var(--rose-blush)]/30 
+                            font-handwritten text-xl text-[var(--ink-deep)] placeholder:text-[var(--ink-deep)]/20
+                            focus:outline-none focus:border-transparent focus:ring-0
+                            transition-all resize-none leading-[1.5rem] overflow-hidden
+                            ${isFocused ? 'paper-lines bg-transparent !border-none !px-0 shadow-none' : ''}`}
+                            style={{ minHeight: isFocused ? '350px' : '180px' }}
                         />
+                        {isFocused && (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 0.4 }}
+                                className="absolute bottom-[-25px] right-0 font-handwritten text-sm text-[var(--ink-deep)] pointer-events-none"
+                            >
+                                Tap outside to save Changes ✨
+                            </motion.div>
+                        )}
                     </div>
 
                     {/* Photo Upload Section */}
-                    <div>
+                    <div className={`zen-focus-content ${isFocused ? 'zen-blurred' : ''}`}>
                         <label className="block font-handwritten text-lg text-[var(--ink-deep)] mb-2">
                             Add photos <span className="opacity-50 text-base">(optional, up to 3)</span>
                         </label>
@@ -225,7 +257,7 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
                     </div>
 
                     {/* Sticker Selector */}
-                    <div>
+                    <div className={`zen-focus-content ${isFocused ? 'zen-blurred' : ''}`}>
                         <label className="block font-handwritten text-lg text-[var(--ink-deep)] mb-2">
                             Add a doodle
                         </label>
@@ -281,7 +313,7 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
                     </div>
 
                     {/* Signature */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className={`grid grid-cols-2 gap-4 zen-focus-content ${isFocused ? 'zen-blurred' : ''}`}>
                         <div>
                             <label className="block font-handwritten text-lg text-[var(--ink-deep)] mb-2">
                                 Sign-off
@@ -315,7 +347,7 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
                     </div>
 
                     {/* Buttons */}
-                    <div className="flex gap-4 pt-4">
+                    <div className={`flex gap-4 pt-4 zen-focus-content ${isFocused ? 'zen-blurred' : ''}`}>
                         <motion.button
                             onClick={onCancel}
                             className="flex-1 px-6 py-3 rounded-full border-2 border-[var(--ink-deep)]/20 
@@ -342,7 +374,7 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
             </motion.div>
 
             {/* Bottom Spacer for centering */}
-            <div className="flex-grow min-h-[2rem]" />
+            <div className={`flex-grow min-h-[2rem] zen-focus-content ${isFocused ? 'opacity-0' : ''}`} />
         </motion.div>
     );
 }
