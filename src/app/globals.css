@@ -48,8 +48,15 @@ body {
   min-height: 100dvh;
   overflow: hidden;
   scrollbar-gutter: stable;
+  overscroll-behavior: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ensure all fixed scroll containers feel native */
+.fixed.overflow-y-auto {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
 }
 
 /* Paper Texture Overlay */
