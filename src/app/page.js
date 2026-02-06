@@ -12,7 +12,7 @@ import LetterContainer from '@/components/LetterContainer';
 import HandwrittenText from '@/components/HandwrittenText';
 import FloatingHearts from '@/components/FloatingHearts';
 import BurnTimer, { FireEffect } from '@/components/BurnTimer';
-import PreviewControls from '@/components/PreviewControls';
+import LetterFooter from '@/components/LetterFooter';
 import { LETTER_CONTENT } from '@/lib/constants';
 import { parseLetterFromUrl, hasSharedLetter } from '@/lib/shareUtils';
 import { burnVariants } from '@/lib/animations';
@@ -41,6 +41,7 @@ export default function Home({ initialLetterData = null }) {
   const [burnPhase, setBurnPhase] = useState(0);
   const [shareUrl, setShareUrl] = useState('');
   const [shortenStatus, setShortenStatus] = useState('pending'); // pending, success, failed
+  const [timeLeft, setTimeLeft] = useState(null);
 
   // Check for shared letter on mount
   useEffect(() => {
@@ -121,6 +122,11 @@ export default function Home({ initialLetterData = null }) {
     setShortenStatus(status);
   }, []);
 
+  // Handle timer ticks
+  const handleTick = useCallback((time) => {
+    setTimeLeft(time);
+  }, []);
+
   // Handle burn complete
   const handleBurnComplete = useCallback(() => {
     setIsBurning(true);
@@ -154,6 +160,7 @@ export default function Home({ initialLetterData = null }) {
     setTimerActive(false);
     setIsBurning(false);
     setBurnPhase(0);
+    setTimeLeft(null);
     // Note: We intentionally don't clear shareUrl/shortenStatus here 
     // because they are specific to the generated letter.
   }, [isRecipientMode]);
@@ -285,6 +292,13 @@ export default function Home({ initialLetterData = null }) {
                 letterContent={currentLetter}
                 onComplete={handleTextComplete}
               />
+              {/* Integrated Controls & Timer */}
+              {!isBurning && (
+                <LetterFooter
+                  shareUrl={!isRecipientMode ? shareUrl : ''}
+                  timeLeft={timeLeft}
+                />
+              )}
             </LetterContainer>
 
             {/* Fire effect INSIDE the letter bounds */}
@@ -306,13 +320,9 @@ export default function Home({ initialLetterData = null }) {
         onBurnComplete={handleBurnComplete}
         onReplay={handleReplay}
         onBurnPhaseChange={handleBurnPhaseChange}
+        onTick={handleTick}
+        showTimer={false}
       />
-
-      {/* Floating Copy Link for Preview Mode */}
-      {!isRecipientMode &&
-        (appState === STATES.ENVELOPE || appState === STATES.SEAL || appState === STATES.REVEAL) && (
-          <PreviewControls shareUrl={shareUrl} />
-        )}
     </main>
   );
 }

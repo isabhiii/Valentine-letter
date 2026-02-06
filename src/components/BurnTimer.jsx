@@ -6,7 +6,14 @@ import { TIMING } from '@/lib/constants';
 import { PREMIUM_EASE } from '@/lib/animations';
 import FireEffect from './FireEffect';
 
-export default function BurnTimer({ isActive, onBurnComplete, onReplay, onBurnPhaseChange }) {
+export default function BurnTimer({
+    isActive,
+    onBurnComplete,
+    onReplay,
+    onBurnPhaseChange,
+    onTick,
+    showTimer = true
+}) {
     const [timeLeft, setTimeLeft] = useState(TIMING.BURN_COUNTDOWN);
     const [isBurning, setIsBurning] = useState(false);
     const [burnPhase, setBurnPhase] = useState(0); // 0 to 1 progression
@@ -18,17 +25,19 @@ export default function BurnTimer({ isActive, onBurnComplete, onReplay, onBurnPh
 
         const timer = setInterval(() => {
             setTimeLeft(prev => {
-                if (prev <= 1) {
+                const next = prev <= 1 ? 0 : prev - 1;
+                onTick?.(next); // Notify parent of time remaining
+
+                if (next === 0) {
                     clearInterval(timer);
                     startBurn();
-                    return 0;
                 }
-                return prev - 1;
+                return next;
             });
         }, 1000);
 
         return () => clearInterval(timer);
-    }, [isActive, isBurning]);
+    }, [isActive, isBurning, onTick]);
 
     // Burn phase progression (0 to 1 over 4 seconds)
     useEffect(() => {
@@ -86,7 +95,7 @@ export default function BurnTimer({ isActive, onBurnComplete, onReplay, onBurnPh
         <>
             {/* Timer display */}
             <AnimatePresence>
-                {!isBurning && !showFinalMessage && (
+                {showTimer && !isBurning && !showFinalMessage && (
                     <motion.div
                         className="fixed bottom-8 left-1/2 -translate-x-1/2 z-30"
                         initial={{ opacity: 0, y: 20 }}
@@ -98,7 +107,7 @@ export default function BurnTimer({ isActive, onBurnComplete, onReplay, onBurnPh
                             className={`px-5 py-2.5 rounded-full font-handwritten text-xl backdrop-blur-sm
                 ${isWarning
                                     ? 'bg-[var(--heart-red)]/15 text-[var(--heart-red)]'
-                                    : 'bg-[var(--gold-accent)]/15 text-[var(--gold-accent)]'
+                                    : 'bg-[var(--gold-accent)]/15 text-[var(--heart-red)]'
                                 }`}
                             animate={isWarning ? {
                                 scale: [1, 1.05, 1],
