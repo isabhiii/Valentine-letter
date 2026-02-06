@@ -101,7 +101,7 @@ export default function ShareScreen({
 
     return (
         <motion.div
-            className="fixed inset-0 z-40 flex flex-col px-6 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] overflow-y-auto"
+            className="fixed inset-0 z-40 flex flex-col w-full h-full px-6 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] overflow-y-auto overflow-x-hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -276,7 +276,7 @@ export default function ShareScreen({
                     animate={{ opacity: 0.4 }}
                     transition={{ delay: 1 }}
                 >
-                    💡 The letter will self-destruct 60 seconds after reading
+                    💡 This letter exists only for the recipient. It can be burned after reading.
                 </motion.p>
             </motion.div>
 
