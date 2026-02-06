@@ -3,17 +3,27 @@ import { motion } from 'framer-motion';
 import { generateShareUrl, generateShortLink } from '@/lib/shareUtils';
 import { SPRING_GENTLE, PREMIUM_EASE, EASE_OUT_EXPO } from '@/lib/animations';
 
-export default function ShareScreen({ letterData, senderName, onBack, onPreview }) {
-    const [shareUrl, setShareUrl] = useState('');
+export default function ShareScreen({
+    letterData,
+    senderName,
+    shareUrl: initialShareUrl = '',
+    shortenStatus: initialShortenStatus = 'pending',
+    onLinkGenerated,
+    onBack,
+    onPreview
+}) {
+    const [shareUrl, setShareUrl] = useState(initialShareUrl);
     const [copied, setCopied] = useState(false);
     const [isGenerating, setIsGenerating] = useState(false);
-    const [shortenStatus, setShortenStatus] = useState('pending'); // pending, success, failed
+    const [shortenStatus, setShortenStatus] = useState(initialShortenStatus);
     const inputRef = useRef(null);
 
-    // Generate URL on mount
+    // Generate URL on mount if not already present
     useEffect(() => {
-        handleGenerate();
-    }, [letterData, senderName]);
+        if (!shareUrl) {
+            handleGenerate();
+        }
+    }, [letterData, senderName, shareUrl]);
 
     // Generate the share URL
     const handleGenerate = async () => {
@@ -30,16 +40,23 @@ export default function ShareScreen({ letterData, senderName, onBack, onPreview 
                 const shortUrl = `${window.location.origin}/l/${id}`;
                 setShareUrl(shortUrl);
                 setShortenStatus('success');
+                onLinkGenerated?.(shortUrl, 'success');
             } else {
                 console.warn('Short link FAILED - falling back to long URL');
                 const longUrl = generateShareUrl(letterData, senderName);
-                if (longUrl) setShareUrl(longUrl);
+                if (longUrl) {
+                    setShareUrl(longUrl);
+                    onLinkGenerated?.(longUrl, 'failed');
+                }
                 setShortenStatus('failed');
             }
         } catch (error) {
             console.error('HandleGenerate exception:', error);
             const longUrl = generateShareUrl(letterData, senderName);
-            if (longUrl) setShareUrl(longUrl);
+            if (longUrl) {
+                setShareUrl(longUrl);
+                onLinkGenerated?.(longUrl, 'failed');
+            }
             setShortenStatus('failed');
         } finally {
             setIsGenerating(false);

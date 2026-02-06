@@ -12,6 +12,7 @@ import LetterContainer from '@/components/LetterContainer';
 import HandwrittenText from '@/components/HandwrittenText';
 import FloatingHearts from '@/components/FloatingHearts';
 import BurnTimer, { FireEffect } from '@/components/BurnTimer';
+import PreviewControls from '@/components/PreviewControls';
 import { LETTER_CONTENT } from '@/lib/constants';
 import { parseLetterFromUrl, hasSharedLetter } from '@/lib/shareUtils';
 import { burnVariants } from '@/lib/animations';
@@ -38,6 +39,8 @@ export default function Home({ initialLetterData = null }) {
   const [timerActive, setTimerActive] = useState(false);
   const [isBurning, setIsBurning] = useState(false);
   const [burnPhase, setBurnPhase] = useState(0);
+  const [shareUrl, setShareUrl] = useState('');
+  const [shortenStatus, setShortenStatus] = useState('pending'); // pending, success, failed
 
   // Check for shared letter on mount
   useEffect(() => {
@@ -112,6 +115,12 @@ export default function Home({ initialLetterData = null }) {
     setTimerActive(true);
   }, []);
 
+  // Handle link generation from ShareScreen
+  const handleLinkGenerated = useCallback((url, status) => {
+    setShareUrl(url);
+    setShortenStatus(status);
+  }, []);
+
   // Handle burn complete
   const handleBurnComplete = useCallback(() => {
     setIsBurning(true);
@@ -145,6 +154,8 @@ export default function Home({ initialLetterData = null }) {
     setTimerActive(false);
     setIsBurning(false);
     setBurnPhase(0);
+    // Note: We intentionally don't clear shareUrl/shortenStatus here 
+    // because they are specific to the generated letter.
   }, [isRecipientMode]);
 
   // Loading state
@@ -214,6 +225,9 @@ export default function Home({ initialLetterData = null }) {
             key="share"
             letterData={customLetter}
             senderName={senderName}
+            shareUrl={shareUrl}
+            shortenStatus={shortenStatus}
+            onLinkGenerated={handleLinkGenerated}
             onBack={handleBackToEditor}
             onPreview={handlePreviewLetter}
           />
@@ -293,6 +307,12 @@ export default function Home({ initialLetterData = null }) {
         onReplay={handleReplay}
         onBurnPhaseChange={handleBurnPhaseChange}
       />
+
+      {/* Floating Copy Link for Preview Mode */}
+      {!isRecipientMode &&
+        (appState === STATES.ENVELOPE || appState === STATES.SEAL || appState === STATES.REVEAL) && (
+          <PreviewControls shareUrl={shareUrl} />
+        )}
     </main>
   );
 }
