@@ -53,34 +53,6 @@ export default function BurnTimer({
 
     return (
         <>
-            {/* Timer display */}
-            <AnimatePresence>
-                {showTimer && !isBurning && !showFinalMessage && (
-                    <motion.div
-                        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-30"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        transition={{ duration: 0.4, ease: PREMIUM_EASE }}
-                    >
-                        <motion.div
-                            className={`px-5 py-2.5 rounded-full font-handwritten text-xl backdrop-blur-sm
-                ${isWarning
-                                    ? 'bg-[var(--heart-red)]/15 text-[var(--heart-red)]'
-                                    : 'bg-[var(--gold-accent)]/15 text-[var(--heart-red)]'
-                                }`}
-                            animate={isWarning ? {
-                                scale: [1, 1.05, 1],
-                                transition: { duration: 0.8, repeat: Infinity }
-                            } : {}}
-                        >
-                            <span className="opacity-70">This letter will vanish in </span>
-                            <span className="font-bold">{formatTime(timeLeft)}</span>
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-
             {/* Final message */}
             <AnimatePresence>
                 {showFinalMessage && (
