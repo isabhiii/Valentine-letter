@@ -1,7 +1,8 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { SPRING_GENTLE, PREMIUM_EASE } from '@/lib/animations';
+import { buttonVariants, envelopeVariants, SPRING_GENTLE, PREMIUM_EASE } from '@/lib/animations';
+import { AnimatedEnvelopeSequence, DoodlePen, DoodleDoubleHearts, DoodleFlame, DoodleSparkle } from './DoodleIcons';
 
 export default function WelcomeScreen({ onWriteOwn, onUseDefault }) {
     return (
@@ -21,20 +22,10 @@ export default function WelcomeScreen({ onWriteOwn, onUseDefault }) {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2, ...SPRING_GENTLE }}
             >
-                {/* Heart icon */}
-                <motion.div
-                    className="text-6xl sm:text-7xl mb-6"
-                    initial={{ scale: 0, rotate: -180 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    transition={{
-                        delay: 0.3,
-                        type: "spring",
-                        stiffness: 200,
-                        damping: 12
-                    }}
-                >
-                    💌
-                </motion.div>
+                {/* Animated envelope with seal break and open sequence */}
+                <div className="flex justify-center items-center text-[var(--heart-red)] mb-6">
+                    <AnimatedEnvelopeSequence size={90} />
+                </div>
 
                 {/* Title */}
                 <motion.h1
@@ -71,7 +62,10 @@ export default function WelcomeScreen({ onWriteOwn, onUseDefault }) {
                         whileHover={{ scale: 1.03 }}
                         whileTap={{ scale: 0.98 }}
                     >
-                        ✍️ Write Your Own Letter
+                        <span className="inline-flex items-center gap-2">
+                            <DoodlePen size={20} className="text-white" />
+                            Write Your Own Letter
+                        </span>
                     </motion.button>
 
                     <motion.button
@@ -82,21 +76,16 @@ export default function WelcomeScreen({ onWriteOwn, onUseDefault }) {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                     >
-                        💕 Use Sample Letter
+                        <span className="inline-flex items-center gap-2">
+                            <DoodleDoubleHearts size={20} className="text-[var(--heart-red)]" />
+                            Use Sample Letter
+                        </span>
                     </motion.button>
                 </motion.div>
 
 
 
-                {/* Footer note */}
-                <motion.p
-                    className="mt-4 font-handwritten text-sm text-[var(--ink-deep)] opacity-40"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 0.4 }}
-                    transition={{ delay: 1.2 }}
-                >
-                    Your letter will self-destruct after 60 seconds 🔥
-                </motion.p>
+
             </motion.div>
 
             {/* Bottom Spacer */}

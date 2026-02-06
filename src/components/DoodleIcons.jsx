@@ -112,6 +112,163 @@ export function DoodleEnvelope({ size = 48, className = '', animated = false, st
     );
 }
 
+// Animated envelope with simple continuous sequence: enter → seal breaks → opens
+import { motion } from 'framer-motion';
+
+export function AnimatedEnvelopeSequence({ size = 80, className = '' }) {
+    const scale = size / 100;
+
+    return (
+        <motion.div
+            className={`relative ${className}`}
+            initial={{ scale: 0, y: -30, rotate: -10 }}
+            animate={{ scale: 1, y: 0, rotate: 0 }}
+            transition={{
+                delay: 0.1,
+                type: "spring",
+                stiffness: 200,
+                damping: 12
+            }}
+            style={{
+                width: size,
+                height: size * 0.75,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+            }}
+        >
+            <svg
+                width={100 * scale}
+                height={75 * scale}
+                viewBox="0 0 100 75"
+                fill="none"
+                style={{ overflow: 'visible' }}
+            >
+                {/* Letter paper - pops out from inside after seal breaks */}
+                <motion.g
+                    initial={{ y: 0 }}
+                    animate={{ y: -25 }}
+                    transition={{
+                        delay: 0.85,
+                        duration: 0.5,
+                        ease: [0.34, 1.56, 0.64, 1]
+                    }}
+                >
+                    <rect
+                        x={15}
+                        y={18}
+                        width={70}
+                        height={50}
+                        rx={2}
+                        fill="white"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                    />
+                    {/* Letter text lines */}
+                    <motion.g
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 0.35 }}
+                        transition={{ delay: 1.2, duration: 0.3 }}
+                    >
+                        <line x1={23} y1={30} x2={77} y2={30} stroke="currentColor" strokeWidth="1" />
+                        <line x1={23} y1={40} x2={70} y2={40} stroke="currentColor" strokeWidth="1" />
+                        <line x1={23} y1={50} x2={60} y2={50} stroke="currentColor" strokeWidth="1" />
+                    </motion.g>
+                </motion.g>
+
+                {/* Envelope body */}
+                <path
+                    d="M5 12 L5 65 C5 68, 8 70, 12 70 L88 70 C92 70, 95 68, 95 65 L95 12"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    fill="rgba(253, 250, 243, 0.98)"
+                />
+
+                {/* Back flap - opens upward after seal breaks */}
+                <motion.g
+                    style={{ transformOrigin: '50px 12px' }}
+                    initial={{ rotateX: 0 }}
+                    animate={{ rotateX: 180 }}
+                    transition={{
+                        delay: 1.0,
+                        duration: 0.6,
+                        ease: [0.34, 1.56, 0.64, 1]
+                    }}
+                >
+                    <path
+                        d="M5 12 L50 42 L95 12"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        fill="rgba(253, 250, 243, 0.95)"
+                    />
+                </motion.g>
+
+                {/* Front V-fold - static crease line */}
+                <path
+                    d="M5 12 L50 45 L95 12"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    fill="none"
+                    opacity="0.3"
+                />
+
+                {/* Heart seal - breaks */}
+                <motion.g
+                    style={{ transformOrigin: '50px 38px' }}
+                    initial={{ scale: 1, opacity: 1 }}
+                    animate={{
+                        scale: [1, 1.15, 0],
+                        opacity: [1, 1, 0]
+                    }}
+                    transition={{
+                        delay: 0.7,
+                        duration: 0.3,
+                        ease: "easeOut",
+                        times: [0, 0.4, 1]
+                    }}
+                >
+                    <path
+                        d="M50 44 C50 44, 44 38, 44 33 C44 29, 47 27, 50 31 C53 27, 56 29, 56 33 C56 38, 50 44, 50 44 Z"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        fill="currentColor"
+                    />
+                </motion.g>
+
+                {/* Small sparkle burst when seal breaks */}
+                {[0, 1, 2].map((i) => (
+                    <motion.circle
+                        key={i}
+                        cx={50}
+                        cy={38}
+                        r={1.5}
+                        fill="currentColor"
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{
+                            scale: [0, 1, 0],
+                            opacity: [0, 0.8, 0],
+                            x: (i - 1) * 18,
+                            y: -15
+                        }}
+                        transition={{
+                            delay: 0.75 + i * 0.05,
+                            duration: 0.35,
+                            ease: "easeOut"
+                        }}
+                    />
+                ))}
+            </svg>
+        </motion.div>
+    );
+}
+
 // Fixed sparkle - looks like actual sparkles/twinkle, not a plus
 export function DoodleSparkle({ size = 20, className = '', style = {} }) {
     return (
@@ -456,6 +613,137 @@ export function DoodlePanda({ size = 32, className = '', style = {} }) {
             <ellipse cx="30" cy="40" rx="3" ry="2" fill="currentColor" />
             {/* Cute smile */}
             <path d="M26 44 Q30 47, 34 44" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+        </svg>
+    );
+}
+
+// Flame / Fire doodle for burn effects
+export function DoodleFlame({ size = 24, className = '', style = {} }) {
+    return (
+        <svg
+            width={size}
+            height={size}
+            viewBox="0 0 50 60"
+            fill="none"
+            className={className}
+            style={style}
+        >
+            {/* Outer flame */}
+            <path
+                d="M25 4 C30 12, 40 20, 40 36 C40 50, 30 56, 25 56 C20 56, 10 50, 10 36 C10 20, 20 12, 25 4 Z"
+                stroke="currentColor"
+                strokeWidth="2"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+            {/* Inner flame */}
+            <path
+                d="M25 22 C28 28, 32 34, 32 42 C32 50, 28 52, 25 52 C22 52, 18 50, 18 42 C18 34, 22 28, 25 22 Z"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                fill="none"
+                opacity="0.7"
+            />
+            {/* Core */}
+            <path
+                d="M25 36 C26 40, 28 44, 28 48 C28 50, 26 52, 25 52 C24 52, 22 50, 22 48 C22 44, 24 40, 25 36 Z"
+                stroke="currentColor"
+                strokeWidth="1"
+                fill="none"
+                opacity="0.5"
+            />
+        </svg>
+    );
+}
+
+// Pen / Quill doodle for writing
+export function DoodlePen({ size = 24, className = '', style = {} }) {
+    return (
+        <svg
+            width={size}
+            height={size}
+            viewBox="0 0 50 50"
+            fill="none"
+            className={className}
+            style={style}
+        >
+            {/* Quill feather */}
+            <path
+                d="M8 46 C12 42, 18 36, 26 28 C34 20, 40 14, 44 10 C46 8, 48 4, 46 2 C44 0, 40 2, 38 4 C34 8, 28 14, 20 22 C12 30, 6 36, 2 40 C0 42, 4 48, 8 46 Z"
+                stroke="currentColor"
+                strokeWidth="2"
+                fill="none"
+                strokeLinecap="round"
+            />
+            {/* Feather lines */}
+            <path d="M32 16 C28 20, 24 22, 18 24" stroke="currentColor" strokeWidth="1" opacity="0.5" strokeLinecap="round" />
+            <path d="M36 12 C30 18, 26 20, 20 22" stroke="currentColor" strokeWidth="1" opacity="0.4" strokeLinecap="round" />
+            {/* Nib tip */}
+            <path d="M6 44 L2 48" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
+    );
+}
+
+// Eye doodle for preview
+export function DoodleEye({ size = 24, className = '', style = {} }) {
+    return (
+        <svg
+            width={size}
+            height={size}
+            viewBox="0 0 50 30"
+            fill="none"
+            className={className}
+            style={style}
+        >
+            {/* Eye outline */}
+            <path
+                d="M2 15 C10 4, 20 0, 25 0 C30 0, 40 4, 48 15 C40 26, 30 30, 25 30 C20 30, 10 26, 2 15 Z"
+                stroke="currentColor"
+                strokeWidth="2"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+            {/* Iris */}
+            <circle cx="25" cy="15" r="8" stroke="currentColor" strokeWidth="1.5" fill="none" />
+            {/* Pupil */}
+            <circle cx="25" cy="15" r="4" fill="currentColor" />
+            {/* Highlight */}
+            <circle cx="28" cy="12" r="1.5" fill="white" opacity="0.7" />
+        </svg>
+    );
+}
+
+// Double hearts for 💕
+export function DoodleDoubleHearts({ size = 24, className = '', style = {} }) {
+    return (
+        <svg
+            width={size}
+            height={size}
+            viewBox="0 0 60 50"
+            fill="none"
+            className={className}
+            style={style}
+        >
+            {/* Left heart (slightly behind) */}
+            <path
+                d="M18 42 C10 32, 6 24, 10 16 C14 10, 22 10, 25 18 C28 10, 36 10, 40 16 C44 24, 40 32, 32 42 C28 46, 22 46, 18 42 Z"
+                stroke="currentColor"
+                strokeWidth="2"
+                fill="none"
+                strokeLinecap="round"
+                opacity="0.5"
+                transform="translate(-6, -4)"
+            />
+            {/* Right heart (front) */}
+            <path
+                d="M28 44 C20 34, 16 26, 20 18 C24 12, 32 12, 35 20 C38 12, 46 12, 50 18 C54 26, 50 34, 42 44 C38 48, 32 48, 28 44 Z"
+                stroke="currentColor"
+                strokeWidth="2"
+                fill="none"
+                strokeLinecap="round"
+            />
         </svg>
     );
 }

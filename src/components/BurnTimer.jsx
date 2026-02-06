@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { TIMING } from '@/lib/constants';
 import { PREMIUM_EASE } from '@/lib/animations';
 import FireEffect from './FireEffect';
+import { DoodleHeartFilled, DoodleSparkle } from './DoodleIcons';
 
 export default function BurnTimer({
     isActive,
@@ -128,7 +129,7 @@ export default function BurnTimer({
                                     damping: 15
                                 }}
                             >
-                                <span className="text-[#c41e3a]">♥</span>
+                                <DoodleHeartFilled size={40} color="#c41e3a" />
                             </motion.div>
 
                             <motion.button
@@ -141,7 +142,10 @@ export default function BurnTimer({
                                 whileTap={{ scale: 0.98 }}
                                 onClick={handleReplay}
                             >
-                                Read Again ✨
+                                <span className="inline-flex items-center gap-2">
+                                    Read Again
+                                    <DoodleSparkle size={18} className="text-white" />
+                                </span>
                             </motion.button>
                         </motion.div>
                     </motion.div>

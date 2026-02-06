@@ -20,7 +20,7 @@ export const LETTER_CONTENT = {
         "could ever express."
     ],
     signature: "Forever Yours",
-    senderName: "♥"
+    senderName: ""
 };
 
 // Timing configuration

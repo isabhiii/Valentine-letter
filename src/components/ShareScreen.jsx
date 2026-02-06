@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { generateShareUrl, generateShortLink } from '@/lib/shareUtils';
-import { SPRING_GENTLE, PREMIUM_EASE, EASE_OUT_EXPO } from '@/lib/animations';
+import { SPRING_GENTLE, PREMIUM_EASE, EASE_OUT_EXPO, buttonVariants } from '@/lib/animations';
+import { DoodleEnvelope, DoodleSparkle, DoodleEye, DoodleHeartFilled } from './DoodleIcons';
 
 export default function ShareScreen({
     letterData,
@@ -88,7 +89,7 @@ export default function ShareScreen({
 
         try {
             await navigator.share({
-                title: 'A Love Letter For You 💌',
+                title: 'A Love Letter For You',
                 text: `${senderName || 'Someone special'} has written you a Valentine's letter`,
                 url: shareUrl
             });
@@ -130,7 +131,9 @@ export default function ShareScreen({
                         damping: 12
                     }}
                 >
-                    <div className="text-6xl">💌</div>
+                    <div className="text-[var(--heart-red)]">
+                        <DoodleEnvelope size={80} />
+                    </div>
                 </motion.div>
 
                 {/* Title */}
@@ -149,7 +152,10 @@ export default function ShareScreen({
                     animate={{ opacity: 0.7 }}
                     transition={{ delay: 0.4 }}
                 >
-                    Share this magical link with your Valentine ✨
+                    <span className="inline-flex items-center gap-1">
+                        Share this magical link with your Valentine
+                        <DoodleSparkle size={16} className="text-[var(--heart-red)]" />
+                    </span>
                 </motion.p>
 
                 {/* URL Display */}
@@ -174,12 +180,15 @@ export default function ShareScreen({
                                         animate={{ rotate: 360 }}
                                         transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                                     >
-                                        ✨
+                                        <DoodleSparkle size={16} className="text-white" />
                                     </motion.span>
                                     Creating Magic...
                                 </span>
                             ) : (
-                                '✨ Prepare Magical Link'
+                                <span className="inline-flex items-center gap-1">
+                                    <DoodleSparkle size={16} />
+                                    Prepare Magical Link
+                                </span>
                             )}
                         </motion.button>
                     ) : (
@@ -265,7 +274,10 @@ export default function ShareScreen({
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                     >
-                        👁️ Preview
+                        <span className="inline-flex items-center gap-1">
+                            <DoodleEye size={18} />
+                            Preview
+                        </span>
                     </motion.button>
                 </motion.div>
 

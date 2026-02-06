@@ -43,7 +43,7 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
             recipient: recipient || 'My Dearest',
             lines: lines.length > 0 ? lines : LETTER_CONTENT.lines,
             signature: signature || 'Forever Yours',
-            senderName: senderName || '♥',
+            senderName: senderName || '',
             sticker: selectedSticker,
             photos: photos.map(p => p.dataUrl)
         });
@@ -186,7 +186,10 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
                                 animate={{ opacity: 0.4 }}
                                 className="absolute bottom-[-25px] right-0 font-handwritten text-sm text-[var(--ink-deep)] pointer-events-none"
                             >
-                                Tap outside to save Changes ✨
+                                <span className="inline-flex items-center gap-1">
+                                    Tap outside to save Changes
+                                    <DoodleSparkle size={14} className="text-[var(--ink-deep)]" />
+                                </span>
                             </motion.div>
                         )}
                     </div>

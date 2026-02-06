@@ -332,7 +332,7 @@ body {
 
 /* Ruled paper background pattern */
 .paper-lines {
-  background-image: linear-gradient(var(--rose-blush) 1px, transparent 1px);
+  background-image: linear-gradient(rgba(232, 164, 164, 0.35) 1px, transparent 1px);
   background-size: 100% 1.5rem;
   background-position: 0 1.2rem;
   line-height: 1.5rem !important;

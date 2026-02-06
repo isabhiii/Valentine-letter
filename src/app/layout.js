@@ -15,7 +15,7 @@ const hand = localFont({
 });
 
 export const metadata = {
-  title: "A Letter For You ♥",
+  title: "A Letter For You",
   description: "A special Valentine's message just for you",
   appleWebApp: {
     capable: true,

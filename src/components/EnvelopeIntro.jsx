@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { envelopeVariants, SPRING_GENTLE } from '@/lib/animations';
+import { DoodleSparkle } from './DoodleIcons';
 
 export default function EnvelopeIntro({ onOpen }) {
     return (
@@ -111,7 +112,10 @@ export default function EnvelopeIntro({ onOpen }) {
                     animate={{ opacity: [0.5, 0.8, 0.5] }}
                     transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                 >
-                    Tap to Open ✨
+                    <span className="inline-flex items-center gap-1">
+                        Tap to Open
+                        <DoodleSparkle size={16} className="text-white" />
+                    </span>
                 </motion.p>
             </motion.button>
         </motion.div>

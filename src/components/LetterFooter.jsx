@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PREMIUM_EASE } from '@/lib/animations';
+import { DoodleFlame, DoodleEnvelope } from './DoodleIcons';
 
 export default function LetterFooter({ shareUrl, isRecipientMode, onBurn }) {
     const [copied, setCopied] = useState(false);
@@ -41,7 +42,7 @@ export default function LetterFooter({ shareUrl, isRecipientMode, onBurn }) {
                             boxShadow: { duration: 2, repeat: Infinity, ease: "easeInOut" }
                         }}
                     >
-                        <span className="text-xl">🔥</span>
+                        <DoodleFlame size={22} className="text-white" />
                         <span className="font-handwritten text-xl font-bold">Burn After Reading</span>
                     </motion.button>
                 </div>
@@ -59,7 +60,7 @@ export default function LetterFooter({ shareUrl, isRecipientMode, onBurn }) {
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                         >
-                            <span className="text-base">{copied ? '✓' : '📋'}</span>
+                            <span className="text-base">{copied ? '✓' : '🔗'}</span>
                             <span className="font-handwritten text-lg">
                                 {copied ? 'Link Copied!' : 'Copy Magical Link'}
                             </span>

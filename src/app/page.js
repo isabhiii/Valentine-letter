@@ -16,6 +16,7 @@ import LetterFooter from '@/components/LetterFooter';
 import { LETTER_CONTENT } from '@/lib/constants';
 import { parseLetterFromUrl, hasSharedLetter } from '@/lib/shareUtils';
 import { burnVariants } from '@/lib/animations';
+import { DoodleEnvelope } from '@/components/DoodleIcons';
 
 // App states
 const STATES = {
@@ -51,7 +52,8 @@ export default function Home({ initialLetterData = null }) {
       const parsed = parseLetterFromUrl();
       if (parsed) {
         setCustomLetter(parsed.letter);
-        setSenderName(parsed.from || '');
+        // Use 'from' URL param first, fall back to senderName from letter data
+        setSenderName(parsed.from || parsed.letter?.senderName || '');
         setIsRecipientMode(true);
         setAppState(STATES.RECIPIENT_INTRO);
       } else {
@@ -179,7 +181,7 @@ export default function Home({ initialLetterData = null }) {
           animate={{ opacity: 1 }}
         >
           <motion.div
-            className="text-5xl mb-4"
+            className="mb-4 text-[var(--heart-red)]"
             animate={{
               scale: [1, 1.1, 1],
               rotate: [0, 5, -5, 0]
@@ -190,7 +192,7 @@ export default function Home({ initialLetterData = null }) {
               ease: "easeInOut"
             }}
           >
-            💌
+            <DoodleEnvelope size={60} />
           </motion.div>
           <p className="font-handwritten text-xl text-[var(--ink-deep)] opacity-60">
             Loading something special...
