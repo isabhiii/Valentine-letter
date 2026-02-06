@@ -6,7 +6,7 @@ import { SPRING_GENTLE, PREMIUM_EASE } from '@/lib/animations';
 export default function WelcomeScreen({ onWriteOwn, onUseDefault }) {
     return (
         <motion.div
-            className="fixed inset-0 z-40 flex items-center justify-center p-6"
+            className="fixed inset-0 z-40 flex items-center justify-center px-6 pb-6 pt-[calc(1.5rem+env(safe-area-inset-top))]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

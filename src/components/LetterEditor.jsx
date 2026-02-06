@@ -90,7 +90,7 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
 
     return (
         <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
+            className="fixed inset-0 z-50 flex items-center justify-center px-4 pb-4 pt-[calc(1rem+env(safe-area-inset-top))] overflow-y-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
