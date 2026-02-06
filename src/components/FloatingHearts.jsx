@@ -104,7 +104,7 @@ export default function FloatingHearts({ isActive }) {
     if (!isActive && hearts.length === 0) return null;
 
     return (
-        <div className="fixed inset-0 overflow-hidden pointer-events-none z-20">
+        <div className="fixed inset-0 overflow-hidden pointer-events-none z-[100]">
             <AnimatePresence>
                 {hearts.map((heart) => (
                     <DoodleFloatingHeart
