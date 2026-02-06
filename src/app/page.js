@@ -41,7 +41,7 @@ export default function Home({ initialLetterData = null }) {
   const [burnPhase, setBurnPhase] = useState(0);
   const [shareUrl, setShareUrl] = useState('');
   const [shortenStatus, setShortenStatus] = useState('pending'); // pending, success, failed
-  const [timeLeft, setTimeLeft] = useState(null);
+
 
   // Check for shared letter on mount
   useEffect(() => {
@@ -205,7 +205,7 @@ export default function Home({ initialLetterData = null }) {
       {/* Grain overlay for premium feel */}
       <div className="grain-overlay" />
 
-      {/* Welcome screen (sender mode) */}
+      {/* Screen Transitions */}
       <AnimatePresence mode="wait">
         {appState === STATES.WELCOME && (
           <WelcomeScreen
@@ -214,10 +214,7 @@ export default function Home({ initialLetterData = null }) {
             onUseDefault={handleUseDefault}
           />
         )}
-      </AnimatePresence>
 
-      {/* Letter editor */}
-      <AnimatePresence mode="wait">
         {appState === STATES.EDITOR && (
           <LetterEditor
             key="editor"
@@ -226,10 +223,7 @@ export default function Home({ initialLetterData = null }) {
             onCancel={handleCancelEditor}
           />
         )}
-      </AnimatePresence>
 
-      {/* Share screen */}
-      <AnimatePresence mode="wait">
         {appState === STATES.SHARE && (
           <ShareScreen
             key="share"
@@ -242,10 +236,7 @@ export default function Home({ initialLetterData = null }) {
             onPreview={handlePreviewLetter}
           />
         )}
-      </AnimatePresence>
 
-      {/* Recipient intro (when opening shared link) */}
-      <AnimatePresence mode="wait">
         {appState === STATES.RECIPIENT_INTRO && (
           <RecipientIntro
             key="recipient-intro"
@@ -253,21 +244,18 @@ export default function Home({ initialLetterData = null }) {
             onOpen={handleRecipientOpen}
           />
         )}
-      </AnimatePresence>
 
-      {/* Envelope intro */}
-      <AnimatePresence mode="wait">
         {appState === STATES.ENVELOPE && (
-          <EnvelopeIntro key="envelope" onOpen={handleEnvelopeOpen} />
+          <EnvelopeIntro
+            key="envelope"
+            onOpen={handleEnvelopeOpen}
+          />
         )}
-      </AnimatePresence>
 
-      {/* Scratch to reveal */}
-      <AnimatePresence mode="wait">
         {appState === STATES.SEAL && !isBurning && (
           <motion.div
-            key="scratch"
-            className="w-full max-w-[600px]"
+            key="seal"
+            className="w-full max-w-[600px] flex flex-col items-center justify-center min-h-[80vh] px-4"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.98 }}
@@ -278,24 +266,21 @@ export default function Home({ initialLetterData = null }) {
             </LetterContainer>
           </motion.div>
         )}
-      </AnimatePresence>
 
-      {/* Letter reveal */}
-      <AnimatePresence mode="wait">
         {(appState === STATES.REVEAL || (isBurning && appState !== STATES.BURNING)) && (
           <motion.div
-            key="letter"
-            className="w-full max-w-[600px] relative"
+            key="reveal"
+            className="w-full max-w-[600px] relative px-4"
             variants={burnVariants}
             initial="initial"
             animate={isBurning ? "burning" : "initial"}
+            exit={{ opacity: 0, scale: 0.95 }}
           >
             <LetterContainer>
               <HandwrittenText
                 letterContent={currentLetter}
                 onComplete={handleTextComplete}
               />
-              {/* Integrated Controls & Timer */}
               {!isBurning && (
                 <LetterFooter
                   shareUrl={!isRecipientMode ? shareUrl : ''}
@@ -305,7 +290,6 @@ export default function Home({ initialLetterData = null }) {
               )}
             </LetterContainer>
 
-            {/* Fire effect INSIDE the letter bounds */}
             {burnPhase > 0 && (
               <div className="absolute inset-0 overflow-hidden rounded-lg pointer-events-none">
                 <FireEffect intensity={1} burnPhase={burnPhase} />

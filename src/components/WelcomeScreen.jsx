@@ -6,7 +6,7 @@ import { SPRING_GENTLE, PREMIUM_EASE } from '@/lib/animations';
 export default function WelcomeScreen({ onWriteOwn, onUseDefault }) {
     return (
         <motion.div
-            className="fixed inset-0 z-40 flex flex-col px-6 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] overflow-y-auto"
+            className="fixed inset-0 z-40 flex flex-col w-full h-full px-6 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] overflow-y-auto overflow-x-hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
