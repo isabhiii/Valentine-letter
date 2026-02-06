@@ -183,9 +183,12 @@ export default function RecipientIntro({ senderName, onOpen }) {
                 </motion.p>
             </motion.div>
 
+            {/* Bottom Spacer */}
+            <div className="flex-grow min-h-[2rem]" />
+
             {/* Bottom decorative doodle hearts */}
             <motion.div
-                className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-5"
+                className="fixed bottom-10 left-1/2 -translate-x-1/2 flex gap-5 z-20 pointer-events-none"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 0.5 }}
                 transition={{ delay: 2.5 }}

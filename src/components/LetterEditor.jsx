@@ -45,9 +45,8 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
             reader.onload = (event) => {
                 const img = new Image();
                 img.onload = () => {
-                    // Resize to smaller size for URL encoding (need to keep URL length safe)
                     const canvas = document.createElement('canvas');
-                    const maxSize = 250; // Optimized for URL size (250px is sharp on mobile but keeps links small)
+                    const maxSize = 250;
                     let { width, height } = img;
 
                     if (width > height) {
@@ -66,8 +65,6 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
                     canvas.height = height;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
-
-                    // Reduced quality (0.45) for better URL compatibility
                     const dataUrl = canvas.toDataURL('image/webp', 0.45);
                     setPhotos(prev => [...prev, { id: Date.now() + Math.random(), dataUrl }]);
                 };
@@ -76,7 +73,6 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
             reader.readAsDataURL(file);
         });
 
-        // Reset input
         if (fileInputRef.current) {
             fileInputRef.current.value = '';
         }
@@ -102,8 +98,8 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
             <div className="flex-grow min-h-[2rem]" />
 
             <motion.div
-                className="w-full max-w-[600px] paper-texture letter-shadow rounded-xl p-6 sm:p-10 mx-auto transition-all"
-                initial={{ scale: 0.9, y: 30 }}
+                className="w-full max-w-[600px] paper-texture letter-shadow rounded-xl p-6 sm:p-10 mx-auto transition-all relative z-10"
+                initial={{ scale: 0.95, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
                 transition={SPRING_GENTLE}
             >
@@ -128,12 +124,7 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
                 </div>
 
                 {/* Form */}
-                <motion.div
-                    className="space-y-6"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.4 }}
-                >
+                <div className="space-y-6">
                     {/* Recipient */}
                     <div>
                         <label className="block font-handwritten text-lg text-[var(--ink-deep)] mb-2">
@@ -145,9 +136,9 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
                             onChange={(e) => setRecipient(e.target.value)}
                             placeholder="My Dearest"
                             className="w-full px-4 py-3 rounded-lg bg-white/50 border border-[var(--rose-blush)]/30 
-                font-serif text-[var(--ink-deep)] placeholder:text-[var(--ink-deep)]/30
-                focus:outline-none focus:border-[var(--heart-red)]/50 focus:ring-2 focus:ring-[var(--heart-red)]/20
-                transition-all"
+                            font-serif text-[var(--ink-deep)] placeholder:text-[var(--ink-deep)]/30
+                            focus:outline-none focus:border-[var(--heart-red)]/50 focus:ring-2 focus:ring-[var(--heart-red)]/20
+                            transition-all"
                         />
                     </div>
 
@@ -162,9 +153,9 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
                             placeholder="Write from the heart..."
                             rows={6}
                             className="w-full px-4 py-3 rounded-lg bg-white/50 border border-[var(--rose-blush)]/30 
-                font-handwritten text-lg text-[var(--ink-deep)] placeholder:text-[var(--ink-deep)]/30
-                focus:outline-none focus:border-[var(--heart-red)]/50 focus:ring-2 focus:ring-[var(--heart-red)]/20
-                transition-all resize-none leading-relaxed"
+                            font-handwritten text-lg text-[var(--ink-deep)] placeholder:text-[var(--ink-deep)]/30
+                            focus:outline-none focus:border-[var(--heart-red)]/50 focus:ring-2 focus:ring-[var(--heart-red)]/20
+                            transition-all resize-none leading-relaxed"
                         />
                     </div>
 
@@ -174,7 +165,6 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
                             Add photos <span className="opacity-50 text-base">(optional, up to 3)</span>
                         </label>
 
-                        {/* Photo thumbnails */}
                         <div className="flex gap-3 mb-3 flex-wrap">
                             {photos.map((photo, index) => (
                                 <motion.div
@@ -184,12 +174,9 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
                                     animate={{ scale: 1, rotate: index % 2 === 0 ? -2 : 2 }}
                                     transition={{ type: 'spring', stiffness: 400, damping: 20 }}
                                 >
-                                    {/* Doodle-style frame */}
                                     <div
                                         className="w-20 h-20 rounded-lg overflow-hidden border-2 border-dashed border-[var(--heart-red)]/40 p-1 bg-white"
-                                        style={{
-                                            boxShadow: '3px 3px 0 rgba(196, 30, 58, 0.15)'
-                                        }}
+                                        style={{ boxShadow: '3px 3px 0 rgba(196, 30, 58, 0.15)' }}
                                     >
                                         <img
                                             src={photo.dataUrl}
@@ -197,30 +184,27 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
                                             className="w-full h-full object-cover rounded"
                                         />
                                     </div>
-                                    {/* Remove button */}
                                     <button
                                         onClick={() => removePhoto(photo.id)}
                                         className="absolute -top-2 -right-2 w-6 h-6 bg-[var(--heart-red)] text-white rounded-full 
-                      opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center
-                      text-sm font-bold shadow-md hover:bg-red-600"
+                                        opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center
+                                        text-sm font-bold shadow-md hover:bg-red-600"
                                     >
                                         ×
                                     </button>
-                                    {/* Heart decoration */}
                                     <div className="absolute -bottom-1 -right-1 text-[var(--heart-red)]">
                                         <DoodleHeartFilled size={14} color="currentColor" />
                                     </div>
                                 </motion.div>
                             ))}
 
-                            {/* Add photo button */}
                             {photos.length < 3 && (
                                 <motion.button
                                     onClick={() => fileInputRef.current?.click()}
                                     className="w-20 h-20 rounded-lg border-2 border-dashed border-[var(--ink-deep)]/20 
-                    flex flex-col items-center justify-center gap-1 text-[var(--ink-deep)]/40
-                    hover:border-[var(--heart-red)]/40 hover:text-[var(--heart-red)]/60 hover:bg-white/50
-                    transition-all cursor-pointer"
+                                    flex flex-col items-center justify-center gap-1 text-[var(--ink-deep)]/40
+                                    hover:border-[var(--heart-red)]/40 hover:text-[var(--heart-red)]/60 hover:bg-white/50
+                                    transition-all cursor-pointer"
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                 >
@@ -238,12 +222,6 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
                             onChange={handlePhotoUpload}
                             className="hidden"
                         />
-
-                        {photos.length === 0 && (
-                            <p className="text-sm font-handwritten text-[var(--ink-deep)]/40">
-                                Make it personal with your favorite photos together 📸
-                            </p>
-                        )}
                     </div>
 
                     {/* Sticker Selector */}
@@ -255,7 +233,7 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
                             <button
                                 onClick={() => setShowStickerPicker(!showStickerPicker)}
                                 className="flex items-center gap-3 w-full px-4 py-3 rounded-lg bg-white/50 border border-[var(--rose-blush)]/30 
-                  font-handwritten text-[var(--ink-deep)] hover:bg-white/70 transition-all text-left"
+                                font-handwritten text-[var(--ink-deep)] hover:bg-white/70 transition-all text-left"
                             >
                                 <span className="text-[var(--heart-red)]">
                                     {SelectedStickerComponent && <SelectedStickerComponent size={28} color="currentColor" />}
@@ -264,7 +242,6 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
                                 <span className="ml-auto text-[var(--ink-deep)]/50">{showStickerPicker ? '▲' : '▼'}</span>
                             </button>
 
-                            {/* Sticker picker dropdown */}
                             <AnimatePresence>
                                 {showStickerPicker && (
                                     <motion.div
@@ -283,7 +260,7 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
                                                         setShowStickerPicker(false);
                                                     }}
                                                     className={`p-2 rounded-lg flex items-center justify-center transition-all
-                            ${selectedSticker === key
+                                                    ${selectedSticker === key
                                                             ? 'bg-[var(--heart-red)]/15 ring-2 ring-[var(--heart-red)]/50'
                                                             : 'hover:bg-[var(--rose-blush)]/20'
                                                         }`}
@@ -315,9 +292,9 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
                                 onChange={(e) => setSignature(e.target.value)}
                                 placeholder="Forever Yours"
                                 className="w-full px-4 py-3 rounded-lg bg-white/50 border border-[var(--rose-blush)]/30 
-                  font-handwritten text-[var(--ink-deep)] placeholder:text-[var(--ink-deep)]/30
-                  focus:outline-none focus:border-[var(--heart-red)]/50 focus:ring-2 focus:ring-[var(--heart-red)]/20
-                  transition-all"
+                                font-handwritten text-[var(--ink-deep)] placeholder:text-[var(--ink-deep)]/30
+                                focus:outline-none focus:border-[var(--heart-red)]/50 focus:ring-2 focus:ring-[var(--heart-red)]/20
+                                transition-all"
                             />
                         </div>
                         <div>
@@ -330,9 +307,9 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
                                 onChange={(e) => setSenderName(e.target.value)}
                                 placeholder="Your name"
                                 className="w-full px-4 py-3 rounded-lg bg-white/50 border border-[var(--rose-blush)]/30 
-                  font-handwritten text-[var(--ink-deep)] placeholder:text-[var(--ink-deep)]/30
-                  focus:outline-none focus:border-[var(--heart-red)]/50 focus:ring-2 focus:ring-[var(--heart-red)]/20
-                  transition-all"
+                                font-handwritten text-[var(--ink-deep)] placeholder:text-[var(--ink-deep)]/30
+                                focus:outline-none focus:border-[var(--heart-red)]/50 focus:ring-2 focus:ring-[var(--heart-red)]/20
+                                transition-all"
                             />
                         </div>
                     </div>
@@ -342,8 +319,8 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
                         <motion.button
                             onClick={onCancel}
                             className="flex-1 px-6 py-3 rounded-full border-2 border-[var(--ink-deep)]/20 
-                text-[var(--ink-deep)] font-handwritten text-lg
-                hover:bg-[var(--ink-deep)]/5 transition-colors"
+                            text-[var(--ink-deep)] font-handwritten text-lg
+                            hover:bg-[var(--ink-deep)]/5 transition-colors"
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                         >
@@ -352,8 +329,8 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
                         <motion.button
                             onClick={handleSave}
                             className="flex-1 px-6 py-3 rounded-full bg-gradient-to-r from-[var(--heart-red)] to-[#ff4b4b]
-                text-white font-handwritten text-xl shadow-lg shadow-red-500/20
-                hover:shadow-xl hover:shadow-red-500/30 transition-all flex items-center justify-center gap-2"
+                            text-white font-handwritten text-xl shadow-lg shadow-red-500/20
+                            hover:shadow-xl hover:shadow-red-500/30 transition-all flex items-center justify-center gap-2"
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                         >
@@ -361,7 +338,7 @@ export default function LetterEditor({ onSave, onCancel, initialData }) {
                             <DoodleSparkle size={18} className="text-white" />
                         </motion.button>
                     </div>
-                </motion.div>
+                </div>
             </motion.div>
 
             {/* Bottom Spacer for centering */}

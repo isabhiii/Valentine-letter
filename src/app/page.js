@@ -201,7 +201,7 @@ export default function Home({ initialLetterData = null }) {
   }
 
   return (
-    <main className="min-h-screen min-h-dvh flex flex-col items-center justify-start py-8 px-4 overflow-y-auto overflow-x-hidden">
+    <main className="min-h-screen min-h-dvh flex flex-col items-center justify-start relative">
       {/* Grain overlay for premium feel */}
       <div className="grain-overlay" />
 
