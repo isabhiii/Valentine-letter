@@ -84,7 +84,7 @@ export default function ShareScreen({ letterData, senderName, onBack, onPreview 
 
     return (
         <motion.div
-            className="fixed inset-0 z-40 flex flex-col items-center justify-center px-6 py-10 pt-[calc(2rem+env(safe-area-inset-top))] overflow-y-auto"
+            className="fixed inset-0 z-40 flex items-center justify-center px-6 pt-[calc(1.5rem+env(safe-area-inset-top))] pb-[calc(1.5rem+env(safe-area-inset-bottom))] overflow-y-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -93,7 +93,7 @@ export default function ShareScreen({ letterData, senderName, onBack, onPreview 
             }}
         >
             <motion.div
-                className="w-full max-w-md paper-texture letter-shadow rounded-2xl p-8 sm:p-10 my-8"
+                className="w-full max-w-md paper-texture letter-shadow rounded-2xl p-8 sm:p-10 my-auto"
                 initial={{ scale: 0.9, y: 30 }}
                 animate={{ scale: 1, y: 0 }}
                 transition={SPRING_GENTLE}
